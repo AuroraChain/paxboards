@@ -266,7 +266,11 @@ class BoardCmd(default_cmds.MuxCommand):
                 self.msg("Unable to find a unique board matching '" + self.lhs + "'")
                 return
 
-            if not board.access(caller, access_type='post', default=False):
+            # Take the read permissions as a default, in case 'post' permissions aren't
+            # set.  If a board has NO permissions set, it'll be accessible to everyone.
+            can_read = board.access(caller, access_type='read', default=True)
+
+            if not board.access(caller, access_type='post', default=can_read):
                 self.msg("You don't have permission to post to " + board.name + "!")
                 return
 
