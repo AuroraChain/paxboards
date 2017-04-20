@@ -116,7 +116,7 @@ class BoardCmd(default_cmds.MuxCommand):
     The sixth will delete a post you have permission to delete.
     """
     key = "bboard"
-    aliases = ["@bb", "@bboard", "forum", "@forum"]
+    aliases = ["@bb", "@bboard", "forum", "@forum", "@bbread"]
     help_category = "Forum"
 
     def resolve_id(self, string):
@@ -156,7 +156,7 @@ class BoardCmd(default_cmds.MuxCommand):
 
         boards = DefaultBoard.objects.get_all_visible_boards(caller)
 
-        if len(self.switches) == 0 or "read" in self.switches:
+        if len(self.switches) == 0 or "read" in self.switches or self.cmdstring == "@bbread":
             if not self.lhs:
                 table = evtable.EvTable("#", "Name", "Unread", "Total", "Sub'd")
                 counter = 0
