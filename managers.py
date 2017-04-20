@@ -97,9 +97,11 @@ class PostManager(TypedObjectManager):
     def get_queryset(self):
         return PostQuerySet(self.model, using=self._db)
 
+    @returns_typeclass
     def post(self, id):
         return self.get_queryset().get(pk=id)
 
+    @returns_typeclass_list
     def posts(self, board, player=None):
         """
         Given a board and an optional player, returns the posts
