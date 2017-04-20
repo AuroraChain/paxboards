@@ -22,7 +22,7 @@ def board(request, board_id):
         if not board.access(request.user, access_type="read", default=False):
             return render(request, 'board_noperm.html', context)
 
-        posts = Post.objects.posts(board=board)
+        posts = Post.objects.posts(board=board, player=request.user)
         context = {'board': board, 'posts': posts}
 
         return render(request, 'board.html', context)
