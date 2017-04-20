@@ -10,6 +10,16 @@ class DefaultPost(with_metaclass(TypeclassBase, Post)):
 
     objects = PostManager()
 
+    def __str__(self):
+        return "<Post " + str(self.id) + " by " + self.db_poster_name + ": " + self.db_subject + \
+        ("(unread)>" if self.unread else "(none)>" if not hasattr(self,"db_unread") else ">")
+
+    def __unicode__(self):
+        return unicode(str(self))
+
+    def __repr__(self):
+        return str(self)
+
     def has_access(self, player, access_key):
         """
         Checks if the given player has the given access key or is the originator.
@@ -60,6 +70,9 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
 
     objects = BoardManager()
 
+    def __str__(self):
+        return "<Board: " + self.name + ">"
+
     def at_first_save(self):
         self.at_board_creation()
 
@@ -77,7 +90,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
             A list of posts!
 
         """
-        return DefaultPost.objects.posts(self, player)
+        return DefaultPost.objects.posts(self, player=player)
 
     def subscribers(self):
         """

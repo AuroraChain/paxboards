@@ -61,17 +61,17 @@ class PostQuerySet(models.query.QuerySet):
             if board.db_expiry_duration:
                 oldest = datetime.now() - timedelta(days=board.db_expiry_duration)
                 posts = self.filter(db_board=board, db_date_created__gte=oldest)\
-                    .order_by('db_date_created').annotate(unread=Value(False, BooleanField()))
+                    .order_by('db_date_created')
             else:
-                posts = self.filter(db_board=board).order_by('db_date_created')\
-                    .annotate(unread=Value(False, BooleanField()))
+                posts = self.filter(db_board=board).order_by('db_date_created')
 
             if board.db_expiry_maxposts and board.db_expiry_maxposts > 0:
                 posts = posts[-board.db_expiry_maxposts:]
+
+            return posts
+
         except self.model.DoesNotExist:
             return []
-
-        return posts
 
     def by_board_for_player(self, board, player):
         """
@@ -86,9 +86,14 @@ class PostQuerySet(models.query.QuerySet):
             A list of Post objects.
 
         """
-        return self.by_board(board)\
-            .annotate(unread=Case(When(db_readers__in=[player], then=True),
-                                  default=False, output_field=BooleanField()))
+        posts = self.by_board(board)
+        for p in posts:
+            if player.read_posts.filter(pk=p.id).exists():
+                setattr(p,"db_unread",False)
+            else:
+                setattr(p,"db_unread",True)
+
+        return posts
 
 
 class PostManager(TypedObjectManager):
@@ -112,7 +117,7 @@ class PostManager(TypedObjectManager):
         Returns:
 
         """
-        if player:
+        if not player:
             return self.get_queryset().by_board(board)
         else:
             return self.get_queryset().by_board_for_player(board, player)

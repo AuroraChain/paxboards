@@ -46,6 +46,13 @@ class Post(SharedMemoryModel):
 
     objects = PostManager()
 
+    @property
+    def unread(self):
+        if not hasattr(self, "db_unread"):
+            return False
+
+        return self.db_unread
+
     class Meta(object):
         "Define Django meta options"
         verbose_name = "Post"

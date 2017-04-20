@@ -6,8 +6,7 @@ from typeclasses.characters import Character
 from typeclasses.objects import Object
 
 from board_utils import *
-from models import Post
-from boards import DefaultBoard
+from boards import DefaultBoard, DefaultPost
 
 
 class BoardAdminCmd(default_cmds.MuxCommand):
@@ -120,6 +119,20 @@ class BoardCmd(default_cmds.MuxCommand):
     help_category = "Forum"
 
     def resolve_id(self, string):
+        """
+        Helper function which, given a string, will resolve it into a board or post.
+        The string should be in the format "<board>[/postnum]", where board is either
+        the name of a board or a number within those the player can see, while postnum
+        should be an integer.
+
+        Args:
+            string: The string to resolve
+
+        Returns:
+            A dictionary containing 'board' (for a board), 'post' (if applicable), and the
+            post number (just for convenience).
+
+        """
         readargs = self.lhs.split('/', 1)
         boardname = readargs[0]
 
@@ -150,7 +163,8 @@ class BoardCmd(default_cmds.MuxCommand):
         post = posts[postnum - 1]
         return {"board": board, "post": post, "postnum": postnum}
 
-    # This is overly long, and could potentially use a refactor.
+    # This is overly long, and could potentially use a refactor to split the switches out
+    # into their own functions.
     def func(self):
         caller = self.player
 
@@ -186,7 +200,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 post = result["post"]
 
                 if not post:
-                    posts = Post.objects.posts(board=board, player=caller)
+                    posts = board.posts(player=caller)
                     if not posts:
                         self.msg("No posts on " + board.name)
                         return
@@ -275,8 +289,8 @@ class BoardCmd(default_cmds.MuxCommand):
                 if postnum == 0:
                     return
 
-                announcement = "|/New post by |555" + post.db_poster_name + ":|n (" + board.name + "/" + str(postnum) + ") |555" +\
-                               post.db_subject + "|n|/"
+                announcement = "|/New post by |555" + post.db_poster_name + ":|n (" + board.name + "/" + \
+                               str(postnum + 1) + ") |555" + post.db_subject + "|n|/"
 
                 self.msg("Posted.")
 
