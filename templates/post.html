@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+    <p><a href="..">Back to {{ board.name }}</a></p>
+    <h1>{{ post.db_subject }} </h1>
+    <p><b>Date:</b> {{ post.db_date_created }}<BR/>
+    <b>Poster:</b> {{ post.db_poster_name }}</p>
+    <div style="white-space: pre-wrap; font-family: monospace;">{{ text }}</div>
+{% else %}
+    <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+{% endif %}
+{% endblock %}

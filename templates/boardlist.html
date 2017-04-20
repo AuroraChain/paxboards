@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+    <h1>BBoards</h1>
+    {% if boards %}
+        <ul>
+        {% for board in boards %}
+            <li><a href="/boards/{{ board.id }}/">{{ board.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no available bboards.</p>
+    {% endif %}
+{% else %}
+    <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+{% endif %}
+{% endblock %}

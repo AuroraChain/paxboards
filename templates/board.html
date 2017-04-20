@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+    <p><a href="..">Back to board list</a></p>
+    <h1>{{ board.name }}</h1>
+    <ul>
+        {% for post in posts %}
+            <li><a href="/boards/{{ board.id }}/{{ post.id }}/">
+            {% if post.unread %}<b>{% endif %}
+                [{{ post.db_poster_name }}] {{ post.db_subject }}</a>
+            {% if post.unread %}</b>{% endif %}
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+{% endif %}
+{% endblock %}
