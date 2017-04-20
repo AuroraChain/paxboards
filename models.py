@@ -51,13 +51,6 @@ class Post(SharedMemoryModel):
         verbose_name = "Post"
         verbose_name_plural = "Posts"
 
-    def mark_read(self, player, has_read):
-        if has_read:
-            self.db_readers.add(player)
-        else:
-            self.db_readers.remove(player)
-        self.save()
-
 
 class BoardDB(TypedObject):
     """

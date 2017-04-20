@@ -141,7 +141,7 @@ class BoardCmd(default_cmds.MuxCommand):
         if len(readargs) == 1:
             return {"board": board, "post": None, "postnum": 0}
 
-        posts = Post.objects.posts(board=board, player=self.player)
+        posts = board.posts(self.player)
 
         if not (0 < postnum <= len(posts)):
             self.msg("There's no post by that number.")
@@ -163,7 +163,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 for board in boards:
                     counter += 1
 
-                    posts = Post.objects.posts(board=board,player=caller)
+                    posts = board.posts(caller)
                     unread_count = 0
                     for p in posts:
                         if p.unread:
@@ -324,7 +324,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 self.msg("You must provide a post to edit.")
                 return
 
-            if not post.db_poster_player == caller and not board.access(caller, access_type='edit', default=False):
+            if not post.has_access(caller,"edit"):
                 self.msg("You can't edit that post!")
                 return
 
@@ -348,7 +348,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 self.msg("You must provide a post to delete.")
                 return
 
-            if not post.db_poster_player == caller and not board.access(caller, access_type='delete', default=False):
+            if not post.has_access(caller, "delete"):
                 self.msg("You can't delete that post!")
                 return
 

@@ -22,7 +22,7 @@ def board(request, board_id):
         if not board.access(request.user, access_type="read", default=False):
             return render(request, 'board_noperm.html', context)
 
-        posts = Post.objects.posts(board=board, player=request.user)
+        posts = board.posts(request.user)
         context = {'board': board, 'posts': posts}
 
         return render(request, 'board.html', context)
@@ -36,15 +36,14 @@ def post(request, board_id, post_id):
         post = Post.objects.get(pk=post_id)
 
         board = post.db_board
-        plaintext = ansi.strip_ansi(post.db_text)
-
-        context = {'board': board, 'post': post, 'text': plaintext}
 
         if not board.access(request.user, access_type="read", default=False):
             return render(request, 'board_noperm.html', context)
 
-        post.db_readers.add(request.user)
-        post.save()
+        plaintext = ansi.strip_ansi(post.db_text)
+        context = {'board': board, 'post': post, 'text': plaintext}
+
+        post.mark_read(request.user, True)
 
         return render(request, 'post.html', context)
 

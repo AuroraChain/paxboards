@@ -1,9 +1,59 @@
 from evennia.typeclasses.models import TypeclassBase
 from paxboards.models import Post, BoardDB
-from paxboards.managers import BoardManager
+from paxboards.managers import BoardManager, PostManager
 from future.utils import with_metaclass
 from server.conf import settings
 from django.utils import timezone
+
+
+class DefaultPost(with_metaclass(TypeclassBase, Post)):
+
+    objects = PostManager()
+
+    def has_access(self, player, access_key):
+        """
+        Checks if the given player has the given access key or is the originator.
+
+        Args:
+            player: The player to check against
+            access_key: The access key
+
+        Returns:
+            True or False
+
+        """
+        if not player:
+            return False
+
+        clsname = player.__dbclass__.__name__
+        if clsname == "PlayerDB":
+            if self.db_poster_player == player:
+                return True
+        elif clsname == "ObjectDB":
+            if self.db_poster_object == player:
+                return True
+
+        return self.db_board.access(player, access_type=access_key, default=False)
+
+    def mark_read(self, player, has_read):
+        """
+        Mark this post read for the given player.
+
+        Args:
+            player: The player whose read/unread status we're changing
+            has_read: Should this be marked as read
+
+        Returns:
+
+        """
+        if not player:
+            return
+
+        if has_read:
+            self.db_readers.add(player)
+        else:
+            self.db_readers.remove(player)
+        self.save()
 
 
 class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
@@ -15,6 +65,19 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
 
     def at_board_creation(self):
         pass
+
+    def posts(self, player):
+        """
+        Convenience function, pulls all the posts for a given player's viewpoint.
+
+        Args:
+            player: The player whose read/unread status should be used.  If None, omits unread.
+
+        Returns:
+            A list of posts!
+
+        """
+        return DefaultPost.objects.posts(self, player)
 
     def subscribers(self):
         """
