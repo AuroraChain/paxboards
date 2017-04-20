@@ -173,7 +173,7 @@ class BoardCmd(default_cmds.MuxCommand):
                     if board.subscribers().filter(pk=caller.pk).exists():
                         subbed = "Yes"
 
-                    table.add_row(counter,board.name,unread_count,posts.count(),subbed)
+                    table.add_row(counter,board.name,unread_count,len(posts),subbed)
 
                 self.msg(table)
             else:
