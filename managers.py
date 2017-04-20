@@ -88,8 +88,7 @@ class PostQuerySet(models.query.QuerySet):
         """
         return self.by_board(board)\
             .annotate(unread=Case(When(db_readers__in=[player], then=True),
-                                  default=False, output_field=BooleanField()))\
-            .order_by('db_date_created')
+                                  default=False, output_field=BooleanField()))
 
 
 class PostManager(TypedObjectManager):

@@ -268,12 +268,8 @@ class BoardCmd(default_cmds.MuxCommand):
                                      subject=readargs[1], text=self.rhs)
 
             if post:
-                posts = Post.objects.posts(board=board)
-                postnum = 0
-                for index, testpost in enumerate(posts):
-                    if testpost == post:
-                        postnum = index
-                        break
+                posts = board.posts()
+                postnum = posts.index(post)
 
                 # Give up
                 if postnum == 0:

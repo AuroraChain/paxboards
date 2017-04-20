@@ -66,7 +66,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
     def at_board_creation(self):
         pass
 
-    def posts(self, player):
+    def posts(self, player=None):
         """
         Convenience function, pulls all the posts for a given player's viewpoint.
 
