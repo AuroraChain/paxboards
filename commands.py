@@ -158,7 +158,7 @@ class BoardCmd(default_cmds.MuxCommand):
 
         if len(self.switches) == 0 or "read" in self.switches:
             if not self.lhs:
-                table = evtable.EvTable("#", "Name", "Unread")
+                table = evtable.EvTable("#", "Name", "Unread", "Total", "Sub'd")
                 counter = 0
                 for board in boards:
                     counter += 1
@@ -169,7 +169,11 @@ class BoardCmd(default_cmds.MuxCommand):
                         if p.unread:
                             unread_count += 1
 
-                    table.add_row(counter,board.name,unread_count)
+                    subbed = " "
+                    if board.subscribers().filter(pk=caller.pk).exists():
+                        subbed = "Yes"
+
+                    table.add_row(counter,board.name,unread_count,posts.count(),subbed)
 
                 self.msg(table)
             else:
@@ -278,12 +282,11 @@ class BoardCmd(default_cmds.MuxCommand):
                 announcement = "|/New post by |555" + post.db_poster_name + ":|n (" + board.name + "/" + str(postnum) + ") |555" +\
                                post.db_subject + "|n|/"
 
-                self.msg(announcement)
+                self.msg("Posted.")
 
                 subs = board.subscribers()
                 for s in subs:
-                    if not s == caller:
-                        s.msg(announcement)
+                    s.msg(announcement)
 
             return
 
