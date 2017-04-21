@@ -97,6 +97,9 @@ class BoardCmd(default_cmds.MuxCommand):
     bboard/unsub <board>
     bboard/edit <board>/<post>=<newpost>
     bboard/delete <board>/<post>
+    bboard/scan
+    bboard/new
+    bboard/catchup
 
     The first and second forms of this command will read the bboards.  If no
     parameters are provided, it list all available bboards.  If a single
@@ -111,9 +114,15 @@ class BoardCmd(default_cmds.MuxCommand):
     The fifth will edit a post you have permissions to edit.
 
     The sixth will delete a post you have permission to delete.
+
+    The seventh will show you only the boards with unread posts.
+
+    The eighth will read the next unread post on the given board, or globally.
+
+    The ninth will mark all posts read on the given board, or 'all'.
     """
     key = "bboard"
-    aliases = ["@bb", "@bboard", "forum", "@forum", "@bbread"]
+    aliases = ["@bb", "@bboard", "forum", "@forum", "@bbread", "@bbnew"]
     help_category = "Forum"
 
     def resolve_id(self, string):
@@ -168,8 +177,11 @@ class BoardCmd(default_cmds.MuxCommand):
         caller = self.player
 
         boards = DefaultBoard.objects.get_all_visible_boards(caller)
+        shortcut = False
+        if self.cmdstring in ["@bbread", "@bbnew"]:
+            shortcut = True
 
-        if len(self.switches) == 0 or "read" in self.switches or self.cmdstring == "@bbread":
+        if "read" in self.switches or self.cmdstring == "@bbread" or (len(self.switches) == 0 and not shortcut):
             if not self.lhs:
                 table = evtable.EvTable("#", "Name", "Unread", "Total", "Sub'd")
                 counter = 0
@@ -222,28 +234,92 @@ class BoardCmd(default_cmds.MuxCommand):
 
                     self.msg(table)
                 else:
-                    postid = post.db_board.name + " / " + str(result["postnum"])
-
-                    datestring = str(post.db_date_created.year) + "/"
-                    datestring += str(post.db_date_created.month).rjust(2, '0') + "/"
-                    datestring += str(post.db_date_created.day).rjust(2, '0')
-
-                    header = ("===[ " + postid + " ]").ljust(75, "=")
-
-                    self.msg(" ")
-                    self.msg(header)
-                    self.msg("|555Date   :|n " + datestring)
-                    self.msg("|555Poster :|n " + post.db_poster_name)
-                    self.msg("|555Subject:|n " + post.db_subject)
-                    self.msg("---------------------------------------------------------------------------")
-                    self.msg(post.db_text)
-                    self.msg("===========================================================================")
-                    self.msg(" ")
-
+                    post.display_post(caller)
                     post.db_readers.add(caller)
                     post.save()
 
                     return
+
+        if "scan" in self.switches:
+            table = evtable.EvTable("#", "Name", "Unread", "Total", "Sub'd")
+            counter = 0
+            has_unread = False
+            for board in boards:
+                counter += 1
+
+                posts = board.posts(caller)
+                unread_count = 0
+                for p in posts:
+                    if p.unread:
+                        unread_count += 1
+
+                subbed = " "
+                if board.subscribers().filter(pk=caller.pk).exists():
+                    subbed = "Yes"
+
+                if unread_count > 0:
+                    has_unread = True
+                    table.add_row(counter, board.name, unread_count, len(posts), subbed)
+
+            if has_unread:
+                self.msg(table)
+            else:
+                self.msg("No unread posts!")
+            return
+
+        if "new" in self.switches or self.cmdstring == "@bbnew":
+            if not self.lhs:
+                for b in boards:
+                    posts = b.posts(caller)
+                    for p in posts:
+                        if p.unread:
+                            p.display_post(caller)
+                            p.mark_read(caller, True)
+                            return
+
+                self.msg("No unread posts!")
+                return
+
+            result = self.resolve_id(self.lhs)
+            board = result["board"]
+            if not board:
+                self.msg("Unable to find a board matching '" + self.lhs+ "'!")
+                return
+
+            posts = board.posts(caller)
+            postcounter = 0
+            for p in posts:
+                postcounter += 1
+                if p.unread:
+                    p.display_post(caller)
+                    p.mark_read(caller, True)
+                    return
+
+            self.msg("No unread posts!")
+            return
+
+        if "catchup" in self.switches:
+            if not self.lhs:
+                self.msg("If you want to catchup all boards, do |555" + self.cmdstring + "/catchup all|n.")
+                return
+
+            if self.lhs == "all":
+                boards = DefaultBoard.objects.get_all_visible_boards(caller)
+                for b in boards:
+                    b.mark_all_read(caller)
+
+                self.msg("All boards marked read.")
+                return
+
+            result = self.resolve_id(self.lhs)
+            board = result["board"]
+            if not board:
+                self.msg("Unable to find a board matching '" + self.lhs+ "'!")
+                return
+
+            board.mark_all_read(caller)
+            self.msg("All posts on " + board.name + " marked read.")
+            return
 
         if "post" in self.switches:
             if not self.lhs:

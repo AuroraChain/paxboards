@@ -65,6 +65,27 @@ class DefaultPost(with_metaclass(TypeclassBase, Post)):
             self.db_readers.remove(player)
         self.save()
 
+    def display_post(self, player):
+        post_num = self.db_board.posts().index(self)
+
+        postid = self.db_board.name + " / " + str(post_num)
+
+        datestring = str(self.db_date_created.year) + "/"
+        datestring += str(self.db_date_created.month).rjust(2, '0') + "/"
+        datestring += str(self.db_date_created.day).rjust(2, '0')
+
+        header = ("===[ " + postid + " ]").ljust(75, "=")
+
+        player.msg(" ")
+        player.msg(header)
+        player.msg("|555Date   :|n " + datestring)
+        player.msg("|555Poster :|n " + self.db_poster_name)
+        player.msg("|555Subject:|n " + self.db_subject)
+        player.msg("---------------------------------------------------------------------------")
+        player.msg(self.db_text)
+        player.msg("===========================================================================")
+        player.msg(" ")
+
 
 class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
 
@@ -119,6 +140,27 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
         else:
             self.db_subscriptions.remove(player)
         self.save()
+
+    def mark_all_read(self, caller):
+        """
+        Mark all the posts on a given board read.
+
+        Args:
+            caller: The player for whom these posts should be marked read.
+
+        Returns:
+            None
+
+        """
+        if not self.access(caller, access_type="read", default=True):
+            return
+
+        posts = self.posts(caller)
+        for p in posts:
+            if p.unread:
+                p.mark_read(caller, True)
+
+        return
 
     def create_post(self, subject, text, author_name=settings.SERVERNAME, author_player=None, author_object=None,
                     parent=None):
