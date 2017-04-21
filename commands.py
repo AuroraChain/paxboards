@@ -35,8 +35,6 @@ class BoardAdminCmd(default_cmds.MuxCommand):
     help_category = "Forum"
 
     def func(self):
-        caller = self.caller
-
         if "create" in self.switches:
             testboard = DefaultBoard.objects.get_board_exact(self.args)
 
@@ -139,6 +137,7 @@ class BoardCmd(default_cmds.MuxCommand):
         if not 1 <= len(readargs) <= 2:
             self.msg("Unable to parse post identifier '" + string + "'!")
 
+        postnum = 0
         if len(readargs) == 2:
             try:
                 postnum = int(readargs[1])
@@ -187,7 +186,7 @@ class BoardCmd(default_cmds.MuxCommand):
                     if board.subscribers().filter(pk=caller.pk).exists():
                         subbed = "Yes"
 
-                    table.add_row(counter,board.name,unread_count,len(posts),subbed)
+                    table.add_row(counter, board.name, unread_count, len(posts), subbed)
 
                 self.msg(table)
             else:
@@ -205,7 +204,7 @@ class BoardCmd(default_cmds.MuxCommand):
                         self.msg("No posts on " + board.name)
                         return
 
-                    table = evtable.EvTable("","Poster","Subject","Date")
+                    table = evtable.EvTable("", "Poster", "Subject", "Date")
                     counter = 0
                     for post in posts:
                         counter += 1
@@ -215,18 +214,19 @@ class BoardCmd(default_cmds.MuxCommand):
                             unreadstring = "|555*|n "
 
                         datestring = str(post.db_date_created.year) + "/"
-                        datestring += str(post.db_date_created.month).rjust(2,'0') + "/"
-                        datestring += str(post.db_date_created.day).rjust(2,'0')
+                        datestring += str(post.db_date_created.month).rjust(2, '0') + "/"
+                        datestring += str(post.db_date_created.day).rjust(2, '0')
 
-                        table.add_row(unreadstring + self.lhs + "/" + str(counter), post.db_poster_name, post.db_subject, datestring)
+                        table.add_row(unreadstring + self.lhs + "/" + str(counter), post.db_poster_name,
+                                      post.db_subject, datestring)
 
                     self.msg(table)
                 else:
                     postid = post.db_board.name + " / " + str(result["postnum"])
 
                     datestring = str(post.db_date_created.year) + "/"
-                    datestring += str(post.db_date_created.month).rjust(2,'0') + "/"
-                    datestring += str(post.db_date_created.day).rjust(2,'0')
+                    datestring += str(post.db_date_created.month).rjust(2, '0') + "/"
+                    datestring += str(post.db_date_created.day).rjust(2, '0')
 
                     header = ("===[ " + postid + " ]").ljust(75, "=")
 
@@ -330,7 +330,6 @@ class BoardCmd(default_cmds.MuxCommand):
             if not result:
                 return
 
-            board = result["board"]
             post = result["post"]
 
             # No post
@@ -338,7 +337,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 self.msg("You must provide a post to edit.")
                 return
 
-            if not post.has_access(caller,"edit"):
+            if not post.has_access(caller, "edit"):
                 self.msg("You can't edit that post!")
                 return
 
@@ -354,7 +353,6 @@ class BoardCmd(default_cmds.MuxCommand):
             if not result:
                 return
 
-            board = result["board"]
             post = result["post"]
 
             # No post
