@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 from django.db import models
-from django.db.models import Case, When, Value, BooleanField
 from evennia.typeclasses.managers import (TypedObjectManager, TypeclassManager,
                                           returns_typeclass_list, returns_typeclass)
 
@@ -121,6 +120,16 @@ class PostManager(TypedObjectManager):
             return self.get_queryset().by_board(board)
         else:
             return self.get_queryset().by_board_for_player(board, player)
+
+    @returns_typeclass_list
+    def search(self, searchstring, board=None):
+        if board:
+            result = self.get_queryset().by_board(board).filter(db_text__icontains=searchstring).\
+                order_by('db_date_created')
+        else:
+            result = self.get_queryset().filter(db_text__icontains=searchstring).order_by('db_date_created')
+
+        return result
 
 
 class BoardDBManager(TypedObjectManager):

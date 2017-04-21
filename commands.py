@@ -6,7 +6,8 @@ from typeclasses.characters import Character
 from typeclasses.objects import Object
 
 from board_utils import *
-from boards import DefaultBoard, DefaultPost
+from boards import DefaultBoard
+from models import Post
 
 
 class BoardAdminCmd(default_cmds.MuxCommand):
@@ -100,6 +101,7 @@ class BoardCmd(default_cmds.MuxCommand):
     bboard/scan [board]
     bboard/new [board]
     bboard/catchup [board or "all"]
+    bboard/search [board/]<search>
 
     The first and second forms of this command will read the bboards.  If no
     parameters are provided, it list all available bboards.  If a single
@@ -120,6 +122,8 @@ class BoardCmd(default_cmds.MuxCommand):
     The eighth will read the next unread post on the given board, or globally.
 
     The ninth will mark all posts read on the given board, or 'all'.
+
+    The tenth will search bboards for posts containing a given term.
     """
     key = "bboard"
     aliases = ["@bb", "@bboard", "forum", "@forum", "@bbread", "@bbnew"]
@@ -169,6 +173,7 @@ class BoardCmd(default_cmds.MuxCommand):
             return
 
         post = posts[postnum - 1]
+
         return {"board": board, "post": post, "postnum": postnum}
 
     # This is overly long, and could potentially use a refactor to split the switches out
@@ -362,21 +367,7 @@ class BoardCmd(default_cmds.MuxCommand):
                                      subject=readargs[1], text=self.rhs)
 
             if post:
-                posts = board.posts()
-                postnum = posts.index(post)
-
-                # Give up
-                if postnum == 0:
-                    return
-
-                announcement = "|/New post by |555" + post.db_poster_name + ":|n (" + board.name + "/" + \
-                               str(postnum + 1) + ") |555" + post.db_subject + "|n|/"
-
                 self.msg("Posted.")
-
-                subs = board.subscribers()
-                for s in subs:
-                    s.msg(announcement)
 
             return
 
@@ -397,6 +388,57 @@ class BoardCmd(default_cmds.MuxCommand):
 
             board.set_subscribed(caller, sub)
             self.msg("Subscribed to " + board.name if sub else "Unsubscribed from " + board.name)
+            return
+
+        if "search" in self.switches:
+            if not self.lhs:
+                self.msg("You must provide a search term.")
+                return
+
+            readargs = self.lhs.split('/', 1)
+            searchterm = None
+            boardname = None
+            board = None
+            if len(readargs) == 1:
+                if self.rhs:
+                    searchterm = self.rhs
+                    boardname = self.lhs
+                else:
+                    searchterm = self.lhs
+            elif len(readargs) == 2:
+                searchterm = readargs[1]
+                boardname = readargs[0]
+
+            if boardname:
+                board = DefaultBoard.objects.get_visible_board(caller, boardname)
+                if not board:
+                    self.msg("Unable to find a unique board batching '" + boardname + "'")
+                    return
+
+            posts = Post.objects.search(searchterm, board)
+            if len(posts) == 0:
+                self.msg("No posts matching search term.")
+                return
+
+            table = evtable.EvTable("", "Poster", "Subject", "Date")
+            for post in posts:
+                postnum = post.post_num
+                if postnum:
+                    if boardname:
+                        postid = boardname + "/" + str(postnum)
+                    else:
+                        postid = post.db_board.name + "/" + str(postnum)
+                else:
+                    postid = post.db_board.name
+
+                datestring = str(post.db_date_created.year) + "/"
+                datestring += str(post.db_date_created.month).rjust(2, '0') + "/"
+                datestring += str(post.db_date_created.day).rjust(2, '0')
+
+                table.add_row(postid, post.db_poster_name,
+                              post.db_subject, datestring)
+
+            self.msg(table)
             return
 
         if "edit" in self.switches:

@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from django.db import models
 from evennia.typeclasses.models import TypedObject
 from evennia.utils.idmapper.models import SharedMemoryModel
-from evennia.utils.utils import crop, make_iter, lazy_property
 from managers import PostManager
 
 __all__ = ("Post", "BoardDB")
@@ -57,6 +56,90 @@ class Post(SharedMemoryModel):
         "Define Django meta options"
         verbose_name = "Post"
         verbose_name_plural = "Posts"
+
+    def __str__(self):
+        return "<Post " + str(self.id) + " by " + self.db_poster_name + ": " + self.db_subject + \
+        ("(unread)>" if self.unread else "(none)>" if not hasattr(self,"db_unread") else ">")
+
+    def __unicode__(self):
+        return unicode(str(self))
+
+    def __repr__(self):
+        return str(self)
+
+    def has_access(self, player, access_key):
+        """
+        Checks if the given player has the given access key or is the originator.
+
+        Args:
+            player: The player to check against
+            access_key: The access key
+
+        Returns:
+            True or False
+
+        """
+        if not player:
+            return False
+
+        clsname = player.__dbclass__.__name__
+        if clsname == "PlayerDB":
+            if self.db_poster_player == player:
+                return True
+        elif clsname == "ObjectDB":
+            if self.db_poster_object == player:
+                return True
+
+        return self.db_board.access(player, access_type=access_key, default=False)
+
+    def mark_read(self, player, has_read):
+        """
+        Mark this post read for the given player.
+
+        Args:
+            player: The player whose read/unread status we're changing
+            has_read: Should this be marked as read
+
+        Returns:
+
+        """
+        if not player:
+            return
+
+        if has_read:
+            self.db_readers.add(player)
+        else:
+            self.db_readers.remove(player)
+        self.save()
+
+    @property
+    def post_num(self):
+        posts = Post.objects.posts(self.db_board)
+        return posts.index(self) + 1 if self in posts else None
+
+    def display_post(self, player):
+        post_num = self.post_num
+
+        if post_num:
+            postid = self.db_board.name + " / " + str(post_num)
+        else:
+            postid = self.db_board.name
+
+        datestring = unicode(str(self.db_date_created.year)) + u'/'
+        datestring += unicode(str(self.db_date_created.month)).rjust(2, '0') + u'/'
+        datestring += unicode(str(self.db_date_created.day)).rjust(2, '0')
+
+        header = ("===[ " + postid + " ]").ljust(75, "=")
+
+        player.msg(" ")
+        player.msg(header)
+        player.msg("|555Date   :|n " + datestring)
+        player.msg("|555Poster :|n " + self.db_poster_name)
+        player.msg("|555Subject:|n " + self.db_subject)
+        player.msg("---------------------------------------------------------------------------")
+        player.msg(self.db_text)
+        player.msg("===========================================================================")
+        player.msg(" ")
 
 
 class BoardDB(TypedObject):

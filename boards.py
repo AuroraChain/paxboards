@@ -1,90 +1,9 @@
 from evennia.typeclasses.models import TypeclassBase
 from paxboards.models import Post, BoardDB
-from paxboards.managers import BoardManager, PostManager
+from paxboards.managers import BoardManager
 from future.utils import with_metaclass
 from server.conf import settings
 from django.utils import timezone
-
-
-class DefaultPost(with_metaclass(TypeclassBase, Post)):
-
-    objects = PostManager()
-
-    def __str__(self):
-        return "<Post " + str(self.id) + " by " + self.db_poster_name + ": " + self.db_subject + \
-        ("(unread)>" if self.unread else "(none)>" if not hasattr(self,"db_unread") else ">")
-
-    def __unicode__(self):
-        return unicode(str(self))
-
-    def __repr__(self):
-        return str(self)
-
-    def has_access(self, player, access_key):
-        """
-        Checks if the given player has the given access key or is the originator.
-
-        Args:
-            player: The player to check against
-            access_key: The access key
-
-        Returns:
-            True or False
-
-        """
-        if not player:
-            return False
-
-        clsname = player.__dbclass__.__name__
-        if clsname == "PlayerDB":
-            if self.db_poster_player == player:
-                return True
-        elif clsname == "ObjectDB":
-            if self.db_poster_object == player:
-                return True
-
-        return self.db_board.access(player, access_type=access_key, default=False)
-
-    def mark_read(self, player, has_read):
-        """
-        Mark this post read for the given player.
-
-        Args:
-            player: The player whose read/unread status we're changing
-            has_read: Should this be marked as read
-
-        Returns:
-
-        """
-        if not player:
-            return
-
-        if has_read:
-            self.db_readers.add(player)
-        else:
-            self.db_readers.remove(player)
-        self.save()
-
-    def display_post(self, player):
-        post_num = self.db_board.posts().index(self)
-
-        postid = self.db_board.name + " / " + str(post_num)
-
-        datestring = str(self.db_date_created.year) + "/"
-        datestring += str(self.db_date_created.month).rjust(2, '0') + "/"
-        datestring += str(self.db_date_created.day).rjust(2, '0')
-
-        header = ("===[ " + postid + " ]").ljust(75, "=")
-
-        player.msg(" ")
-        player.msg(header)
-        player.msg("|555Date   :|n " + datestring)
-        player.msg("|555Poster :|n " + self.db_poster_name)
-        player.msg("|555Subject:|n " + self.db_subject)
-        player.msg("---------------------------------------------------------------------------")
-        player.msg(self.db_text)
-        player.msg("===========================================================================")
-        player.msg(" ")
 
 
 class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
@@ -111,7 +30,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
             A list of posts!
 
         """
-        return DefaultPost.objects.posts(self, player=player)
+        return Post.objects.posts(self, player=player)
 
     def subscribers(self):
         """
@@ -204,5 +123,18 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
             p.db_readers.add(author_player)
 
         p.save()
+
+        postnum = p.post_num or None
+
+        # Give up
+        if not postnum:
+            return p
+
+        announcement = "|/New post by |555" + p.db_poster_name + ":|n (" + self.name + "/" + \
+                       str(postnum + 1) + ") |555" + p.db_subject + "|n|/"
+
+        subs = self.subscribers()
+        for s in subs:
+            s.msg(announcement)
 
         return p
