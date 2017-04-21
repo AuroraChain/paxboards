@@ -97,9 +97,9 @@ class BoardCmd(default_cmds.MuxCommand):
     bboard/unsub <board>
     bboard/edit <board>/<post>=<newpost>
     bboard/delete <board>/<post>
-    bboard/scan
-    bboard/new
-    bboard/catchup
+    bboard/scan [board]
+    bboard/new [board]
+    bboard/catchup [board or "all"]
 
     The first and second forms of this command will read the bboards.  If no
     parameters are provided, it list all available bboards.  If a single
