@@ -252,7 +252,7 @@ class BoardDBManager(TypedObjectManager):
             if len(filtered) == 1:
                 b = filtered[0]
 
-                all_posts = b.posts(caller)
+                all_posts = b.posts(viewer)
                 unread = 0
                 for p in all_posts:
                     if p.db_unread:
