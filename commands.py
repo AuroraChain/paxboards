@@ -250,7 +250,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 if board.subscribers().filter(pk=caller.pk).exists():
                     subbed = "Yes"
 
-                if unread_count > 0:
+                if board.db_unread_count > 0:
                     has_unread = True
                     table.add_row(counter, board.name, board.db_unread_count, board.db_total_count, subbed)
 
