@@ -193,17 +193,11 @@ class BoardCmd(default_cmds.MuxCommand):
                 for board in boards:
                     counter += 1
 
-                    posts = board.posts(caller)
-                    unread_count = 0
-                    for p in posts:
-                        if p.unread:
-                            unread_count += 1
-
                     subbed = " "
                     if board.subscribers().filter(pk=caller.pk).exists():
                         subbed = "Yes"
 
-                    table.add_row(counter, board.name, unread_count, len(posts), subbed)
+                    table.add_row(counter, board.name, board.db_unread_count, board.db_total_count, subbed)
 
                 self.msg(table)
             else:
@@ -252,19 +246,13 @@ class BoardCmd(default_cmds.MuxCommand):
             for board in boards:
                 counter += 1
 
-                posts = board.posts(caller)
-                unread_count = 0
-                for p in posts:
-                    if p.unread:
-                        unread_count += 1
-
                 subbed = " "
                 if board.subscribers().filter(pk=caller.pk).exists():
                     subbed = "Yes"
 
                 if unread_count > 0:
                     has_unread = True
-                    table.add_row(counter, board.name, unread_count, len(posts), subbed)
+                    table.add_row(counter, board.name, board.db_unread_count, board.db_total_count, subbed)
 
             if has_unread:
                 self.msg(table)

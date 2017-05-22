@@ -3,11 +3,17 @@
 {% if user.is_authenticated %}
     <h1>BBoards</h1>
     {% if boards %}
-        <ul>
-        {% for board in boards %}
-            <li><a href="/boards/{{ board.id }}/">{{ board.name }}</a></li>
-        {% endfor %}
-        </ul>
+        <table width="70%">
+            <tr>
+                <th align="left">Board</th><th align="left">Unread Posts</th>
+            </tr>
+            {% for board in boards %}
+            <tr>
+                <td><a href="/boards/{{ board.id }}/">{{ board.name }}</a></td>
+                <td>{{ board.db_unread_count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     {% else %}
         <p>There are no available bboards.</p>
     {% endif %}

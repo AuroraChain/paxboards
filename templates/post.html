@@ -2,10 +2,18 @@
 {% block content %}
 {% if user.is_authenticated %}
     <p><a href="..">Back to {{ board.name }}</a></p>
-    <h1>{{ post.db_subject }} </h1>
-    <p><b>Date:</b> {{ post.db_date_created }}<BR/>
-    <b>Poster:</b> {{ post.db_poster_name }}</p>
-    <div style="white-space: pre-wrap; font-family: monospace;">{{ text }}</div>
+    <table width="100%">
+        <tr>
+            <td width="30%">{{ post.db_poster_name }}</td>
+            <td align="right" width="100%"> {{ post.db_date_created }}</td>
+        </tr>
+        <tr>
+            <td><b>{{ post.db_subject }}</b></td>
+        </tr>
+    </table>
+    <hr/>
+    <div style="white-space: pre-wrap; font-family: monospace;;">{{ text }}</div>
+    <hr/>
 {% else %}
     <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
 {% endif %}

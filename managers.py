@@ -214,6 +214,16 @@ class BoardDBManager(TypedObjectManager):
             A list of DefaultBoard objects.
         """
         filtered = [b for b in self.all() if b.access(caller, access_type='read', default=True)]
+        for b in filtered:
+            all_posts = b.posts(caller)
+            unread = 0
+            for p in all_posts:
+                if p.db_unread:
+                    unread = unread + 1
+
+            setattr(b,"db_unread_count", unread)
+            setattr(b,"db_total_count", len(all_posts))
+
         return filtered
 
     @returns_typeclass
@@ -240,7 +250,18 @@ class BoardDBManager(TypedObjectManager):
         if boards:
             filtered = [b for b in boards if b.access(viewer, access_type='read', default=True)]
             if len(filtered) == 1:
-                return filtered[0]
+                b = filtered[0]
+
+                all_posts = b.posts(caller)
+                unread = 0
+                for p in all_posts:
+                    if p.db_unread:
+                        unread = unread + 1
+
+                setattr(b, "db_unread_count", unread)
+                setattr(b, "db_total_count", len(all_posts))
+
+                return b
 
         return None
 

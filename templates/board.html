@@ -3,14 +3,29 @@
 {% if user.is_authenticated %}
     <p><a href="..">Back to board list</a></p>
     <h1>{{ board.name }}</h1>
-    <ul>
+    <br/>
+    <table width="90%">
+        <tr>
+            <th align="left" style="border-bottom: 1px solid black;">Title</th>
+            <th align="left" style="border-bottom: 1px solid black;">Poster</th>
+            <th align="left" style="border-bottom: 1px solid black;">Date</th>
+        </th>
         {% for post in posts %}
-            <li><a href="/boards/{{ board.id }}/{{ post.id }}/">
-            {% if post.unread %}<b>{% endif %}
-                [{{ post.db_poster_name }}] {{ post.db_subject }}</a>
-            {% if post.unread %}</b>{% endif %}
+            <tr>
+                <td>
+                    {% if post.unread %}<b>{% endif %}
+                        <a href="/boards/{{ board.id }}/{{ post.id }}/">{{ post.db_subject }}</a>
+                    {% if post.unread %}</b>{% endif %}
+                </td>
+                <td>
+                    {{ post.db_poster_name }}
+                </td>
+                <td>
+                    {{ post.db_date_created }}
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
 {% else %}
     <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
 {% endif %}
