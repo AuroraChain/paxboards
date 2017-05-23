@@ -162,7 +162,7 @@ class BoardDB(TypedObject):
                                               related_name='board_subscriptions',
                                               help_text='Players subscribed to this board.')
 
-    __settingclasspath__ = "typeclasses.boards.Board"
+    __settingclasspath__ = "typeclasses.paxboards.Board"
     __defaultclasspath__ = "paxboards.boards.DefaultBoard"
     __applabel__ = "paxboards"
 
