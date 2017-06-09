@@ -102,6 +102,8 @@ class BoardCmd(default_cmds.MuxCommand):
     bboard/new [board]
     bboard/catchup [board or "all"]
     bboard/search [board/]<search>
+    bboard/reply <board>/<post>=<reply>
+    bboard/thread <board>/<post>
 
     The first and second forms of this command will read the bboards.  If no
     parameters are provided, it list all available bboards.  If a single
@@ -113,17 +115,17 @@ class BoardCmd(default_cmds.MuxCommand):
     The fourth and fifth will toggle your subscriptions on and off, controlling
     whether or not you see notifications of new posts on that board.
 
-    The fifth will edit a post you have permissions to edit.
+    The fifth will edit a post you have permissions to edit, The sixth will delete a
+    post you have permission to delete.
 
-    The sixth will delete a post you have permission to delete.
-
-    The seventh will show you only the boards with unread posts.
-
-    The eighth will read the next unread post on the given board, or globally.
-
-    The ninth will mark all posts read on the given board, or 'all'.
+    The seventh will show you only the boards with unread posts, the eighth will read
+    the next unread post on the given board, or globally, and the ninth will mark all
+    posts read on the given board (or 'all').
 
     The tenth will search bboards for posts containing a given term.
+
+    The eleventh will reply to an existing post, creating a thread, while the twelfth
+    will show all posts in a given thread.
     """
     key = "bboard"
     aliases = ["@bb", "@bboard", "forum", "@forum", "@bbread", "@bbnew"]
@@ -186,7 +188,7 @@ class BoardCmd(default_cmds.MuxCommand):
         if self.cmdstring in ["@bbread", "@bbnew"]:
             shortcut = True
 
-        if "read" in self.switches or self.cmdstring == "@bbread" or (len(self.switches) == 0 and not shortcut):
+        if "read" in self.switches or "thread" in self.switches or self.cmdstring == "@bbread" or (len(self.switches) == 0 and not shortcut):
             if not self.lhs:
                 table = evtable.EvTable("#", "Name", "Unread", "Total", "Sub'd")
                 counter = 0
@@ -233,7 +235,11 @@ class BoardCmd(default_cmds.MuxCommand):
 
                     self.msg(table)
                 else:
-                    post.display_post(caller)
+                    if "thread" in self.switches:
+                        while post.db_parent:
+                            post = post.db_parent
+
+                    post.display_post(caller, show_replies=("thread" in self.switches))
                     post.db_readers.add(caller)
                     post.save()
 
@@ -355,6 +361,58 @@ class BoardCmd(default_cmds.MuxCommand):
                                      subject=readargs[1], text=self.rhs)
 
             if post:
+                self.msg("Posted.")
+
+            return
+
+        if "reply" in self.switches:
+            if not self.lhs:
+                self.msg("You must provide a board and post to reply to.")
+                return
+
+            result = self.resolve_id(self.lhs)
+
+            if not result:
+                self.msg("You must provide a board and post to reply to.")
+                return
+
+            board = result['board']
+            post = result['post']
+            if not board:
+                self.msg("Unable to find a board and post matching '" + self.lhs + "'!")
+                return
+
+            if not post:
+                self.msg("You must provide a post to reply to.")
+                return
+
+            if not self.rhs:
+                self.msg("It wouldn't do much good to make an empty reply, would it?")
+                return
+
+            # Take the read permissions as a default, in case 'post' permissions aren't
+            # set.  If a board has NO permissions set, it'll be accessible to everyone.
+            can_read = board.access(caller, access_type='read', default=True)
+
+            if not board.access(caller, access_type='post', default=can_read):
+                self.msg("You don't have permission to post to " + board.name + "!")
+                return
+
+            while post.db_parent:
+                post = post.db_parent
+
+            postplayer = self.player
+            postobject = None
+            postname = self.player.name
+
+            if self.caller is Object or self.caller is Character:
+                postobject = self.caller
+                postname = postobject.name
+
+            reply = board.create_post(author_name=postname, author_player=postplayer, author_object=postobject,
+                                     subject="Re: " + post.db_subject, parent=post, text=self.rhs)
+
+            if reply:
                 self.msg("Posted.")
 
             return

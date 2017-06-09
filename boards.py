@@ -134,7 +134,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
             return p
 
         announcement = "|/New post by |555" + p.db_poster_name + ":|n (" + self.name + "/" + \
-                       str(postnum + 1) + ") |555" + p.db_subject + "|n|/"
+                       str(postnum) + ") |555" + p.db_subject + "|n|/"
 
         subs = self.subscribers()
         for s in subs:

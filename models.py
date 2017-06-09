@@ -118,7 +118,7 @@ class Post(SharedMemoryModel):
         posts = Post.objects.posts(self.db_board)
         return posts.index(self) + 1 if self in posts else None
 
-    def display_post(self, player):
+    def display_post(self, player, show_replies=False):
         post_num = self.post_num
 
         if post_num:
@@ -132,14 +132,29 @@ class Post(SharedMemoryModel):
 
         header = ("===[ " + postid + " ]").ljust(75, "=")
 
+        post_string = header + "\n"
+        post_string += "|555Date   :|n " + datestring + "\n"
+        post_string += "|555Poster :|n " + self.db_poster_name + "\n"
+        post_string += "|555Subject:|n " + self.db_subject + "\n"
+        post_string += "---------------------------------------------------------------------------\n"
+        post_string += self.db_text + "\n"
+
+        if show_replies:
+            replies = Post.objects.filter(db_parent=self).order_by('db_date_created')
+            for r in replies:
+                datestring = unicode(str(r.db_date_created.year)) + u'/'
+                datestring += unicode(str(r.db_date_created.month)).rjust(2, '0') + u'/'
+                datestring += unicode(str(r.db_date_created.day)).rjust(2, '0')
+                post_string += "\n---------------------------------------------------------------------------\n"
+                post_string += "|555Date   :|n " + datestring + "\n"
+                post_string += "|555Poster :|n " + r.db_poster_name + "\n"
+                post_string += "--------\n"
+                post_string += r.db_text + "\n"
+
+        post_string += "==========================================================================="
+
         player.msg(" ")
-        player.msg(header)
-        player.msg("|555Date   :|n " + datestring)
-        player.msg("|555Poster :|n " + self.db_poster_name)
-        player.msg("|555Subject:|n " + self.db_subject)
-        player.msg("---------------------------------------------------------------------------")
-        player.msg(self.db_text)
-        player.msg("===========================================================================")
+        player.msg(post_string)
         player.msg(" ")
 
 
