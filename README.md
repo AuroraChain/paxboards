@@ -2,6 +2,17 @@
 
 A simple, extensible, threaded bulletin board system for Evennia, with both on-game and web-based interfaces.
 
+## Installation
+
+Simply grab this repository as a subdirectory of your Evennia game directory, and then add the following two lines to your settings.py:
+
+```
+INSTALLED_APPS += ('paxboards',)
+TYPECLASS_PATHS += ['paxboards']
+```
+
+Then run `evennia migrate` and you should be good to go.
+
 ## Components
 
 ### DefaultBoard
