@@ -1,6 +1,6 @@
 # Paxboards
 
-A simple, extensible, bulletin board system for Evennia, with both on-game and web-based interfaces.
+A simple, extensible, threaded bulletin board system for Evennia, with both on-game and web-based interfaces.
 
 ## Components
 
@@ -17,13 +17,15 @@ It supports full lock handlers, with the following access keys:
 * `edit`: can edit posts by people other than yourself
 * `delete`: can delete posts by people other than yourself
 
-### DefaultPost
+### Post
 
-DefaultPost is a simple object class which encapsulates a given post.  Boards can be asked for their posts, and when you provide a calling player, it will annotate each DefaultPost with an 'unread' property as to whether or not that property has been read.
+Post is a simple object class which encapsulates a given post.  Boards can be asked for their posts, and when you provide a calling player, it will annotate each DefaultPost with an 'unread' property as to whether or not that property has been read.
 
 It supports some simple tools to check whether or not a player has access to perform a given operation.
 
 ## TODO
 
-* The DefaultBoard/DefaultPost APIs could be cleaned up considerably; we shouldn't be dipping into the models' `db_*` fields for basic access.
-* The web interface needs help like WHOA.
+* The DefaultBoard/Post APIs could be cleaned up considerably; we shouldn't be dipping into the models' `db_*` fields for basic access.
+* The web interface needs help like *seriously*.  In particular, it needs to support threaded posts, as well as posting/replying.
+* The web interface also seriously needs better templates.  It's kind of ugly right now.
+* The helpfile for bboard could be a lot better.
