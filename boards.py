@@ -13,6 +13,9 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
     def __str__(self):
         return "<Board: " + self.name + ">"
 
+    def at_init(self):
+        pass
+
     def at_first_save(self):
         self.at_board_creation()
 

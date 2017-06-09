@@ -213,7 +213,10 @@ class BoardDBManager(TypedObjectManager):
         Returns:
             A list of DefaultBoard objects.
         """
-        filtered = [b for b in self.all() if b.access(caller, access_type='read', default=True)]
+        filtered = []
+        if caller:
+            filtered = [b for b in self.all() if b.access(caller, access_type='read', default=True)]
+
         for b in filtered:
             all_posts = b.posts(caller)
             unread = 0

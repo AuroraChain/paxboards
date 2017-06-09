@@ -6,7 +6,11 @@ from evennia.utils import ansi
 
 # Create your views here.
 
+
 def boardlist(request):
+    if not request.user:
+        return render(request, 'board_noperm.html', context)
+
     boards = DefaultBoard.objects.get_all_visible_boards(request.user)
     context = {'boards': boards}
     # make the variables in 'context' available to the web page template

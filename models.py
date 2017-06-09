@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from server.conf import settings
 from evennia.typeclasses.models import TypedObject
 from evennia.utils.idmapper.models import SharedMemoryModel
 from managers import PostManager
@@ -162,7 +163,7 @@ class BoardDB(TypedObject):
                                               related_name='board_subscriptions',
                                               help_text='Players subscribed to this board.')
 
-    __settingclasspath__ = "typeclasses.paxboards.Board"
+    __settingclasspath__ = "paxboards.boards.DefaultBoard"
     __defaultclasspath__ = "paxboards.boards.DefaultBoard"
     __applabel__ = "paxboards"
 
