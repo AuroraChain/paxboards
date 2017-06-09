@@ -4,14 +4,24 @@ A simple, extensible, threaded bulletin board system for Evennia, with both on-g
 
 ## Installation
 
-Simply grab this repository as a subdirectory of your Evennia game directory, and then add the following two lines to your settings.py:
+Simply grab this repository as a subdirectory of your Evennia game directory, and then add the following two lines to your `server/conf/settings.py` file:
 
 ```
 INSTALLED_APPS += ('paxboards',)
 TYPECLASS_PATHS += ['paxboards']
 ```
 
-Then run `evennia migrate` and you should be good to go.
+Then go to `web/urls.py` and add:
+
+```
+custom_patterns = [
+    url(r'^boards/', include('paxboards.urls', namespace='board', app_name='paxboards')),
+]
+```
+
+If you already have custom patterns, just add the url record to your existing list.
+
+When all of this is done, run `evennia migrate` and execute `@reload` on your game, and you should be good to go.
 
 ## Components
 
