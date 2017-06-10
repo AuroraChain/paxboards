@@ -25,7 +25,7 @@ def board(request, board_id):
         board = DefaultBoard.objects.get(pk=board_id)
 
         if not board.access(request.user, access_type="read", default=False):
-            return render(request, 'board_noperm.html', context)
+            return render(request, 'board_noperm.html', {})
 
         threads = board.threads(request.user)
 
@@ -34,7 +34,7 @@ def board(request, board_id):
         return render(request, 'board.html', context)
 
     except DefaultBoard.DoesNotExist, DefaultBoard.MultipleObjectsReturned:
-        return render(request, 'board_noperm.html', context)
+        return render(request, 'board_noperm.html', {})
 
 
 def post(request, board_id, post_id):
@@ -47,7 +47,7 @@ def post(request, board_id, post_id):
         board = post.db_board
 
         if not board.access(request.user, access_type="read", default=False):
-            return render(request, 'board_noperm.html', context)
+            return render(request, 'board_noperm.html', {})
 
         plaintext = ansi.strip_ansi(post.db_text)
         setattr(post, 'plaintext', plaintext)
