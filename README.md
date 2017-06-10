@@ -1,8 +1,12 @@
 # Paxboards
 
-A simple, extensible, threaded bulletin board system for Evennia, with both on-game and web-based interfaces.
+A simple, extensible, threaded bulletin board system for Evennia, with both on-game and web-based interfaces.  The on-game interface is modeled loosely after Firan's fork of Myrddin's BBoard system, or after Arx's bboard system.  The web interface is modeled loosely after phpBB type web-forums.
+
+Paxboards was originally written by Rachel "Packetdancer" Blackman, a.k.a. "Pax", for use on Aurora Chain.
 
 ## Installation
+
+### Basic Requirements
 
 Simply grab this repository as a subdirectory of your Evennia game directory, and then add the following two lines to your `server/conf/settings.py` file:
 
@@ -21,16 +25,20 @@ custom_patterns = [
 
 If you already have custom patterns, just add the url record to your existing list.
 
+### Updating Templates
+
 If you want to link the boards from anywhere on your website, simply use `{% url 'paxboards:boardlist' %}` in any template file to automatically generate the appropriate URL for your site installation.
 
-If you want to administer bboards from the Django web admin console, you'll also need to modify the Evennia package itself, editing `evennia_admin.py` in order to add the following to the list of administrative sections:
+### Adding to Django Admin Console
+
+If you want to administer bboards from the Django web admin console, you'll also need to modify the `evennia_admin.html` in order to add the following to the list of administrative sections:
 
 ```
     <h2><a href="{% url "admin:paxboards_boarddb_changelist" %}">Boards</a></h2>
     Boards are used for static player communications.
 ```
 
-When all of this is done, run `evennia migrate` and execute `@reload` on your game, and you should be good to go.
+When all of this is done, run `evennia makemigrations paxboards` and `evennia migrate`, then execute `@reload` on your game, and you should be good to go.
 
 ## Components
 
