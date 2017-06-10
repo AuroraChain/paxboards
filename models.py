@@ -115,18 +115,50 @@ class Post(SharedMemoryModel):
 
     @property
     def post_num(self):
+        """
+        Simple property to return the post number this post occupies on
+        its parent board.
+
+        Returns:
+            An integer.
+
+        """
         posts = Post.objects.posts(self.db_board)
         return posts.index(self) + 1 if self in posts else None
 
     @property
     def last_reply(self):
-        posts = Post.objects.filter(db_parent=self)
-        result = self
-        for p in posts:
-            test = p.last_reply
-            if test and (result.db_date_created < test.db_date_created):
-                result = test
+        """
+
+        Returns:
+            The last/most recent reply Post in the reply chain, or None
+
+        """
+        posts = Post.objects.filter(db_parent=self).order_by('db_date_created')
+        if posts:
+            return posts[-1]
+
+        return None
+
+
+    @property
+    def is_unread(self):
+        if hasattr(self, 'db_unread'):
+            return getattr(self, 'db_unread')
+
+        return True
+
+    @property
+    def subject(self):
+        result = self.db_subject
+        if hasattr(self,'db_pinned') and getattr(self, 'db_pinned'):
+            result = "[Pinned] " + result
+
         return result
+
+    @property
+    def poster(self):
+        return self.db_poster_name
 
     def display_post(self, player, show_replies=False):
         post_num = self.post_num
@@ -145,8 +177,10 @@ class Post(SharedMemoryModel):
         post_string = header + "\n"
         post_string += "|555Date   :|n " + datestring + "\n"
         post_string += "|555Poster :|n " + self.db_poster_name + "\n"
-        post_string += "|555Subject:|n " + self.db_subject + "\n"
-        post_string += "---------------------------------------------------------------------------\n"
+        post_string += "|555Subject:|n " + self.db_subject
+        if self.db_pinned:
+            post_string += " |555(Pinned)|n"
+        post_string += "\n---------------------------------------------------------------------------\n"
         post_string += self.db_text + "\n"
 
         if show_replies:

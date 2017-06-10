@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from django.db import models
+from django.db.models import Q
 from evennia.typeclasses.managers import (TypedObjectManager, TypeclassManager,
                                           returns_typeclass_list, returns_typeclass)
 
@@ -12,10 +13,17 @@ _SESSIONS = None
 
 
 def sort_date(post):
-    if hasattr(post, "last_post_on"):
-        return getattr(post, "last_post_on")
+    result_time = 0
+    result_pinned = 0
 
-    return 0
+    if hasattr(post, "last_post_on"):
+        result_time = getattr(post, "last_post_on")
+
+    if hasattr(post, "db_pinned"):
+        if getattr(post, "db_pinned"):
+            result_pinned = 1
+
+    return result_pinned, result_time
 
 
 def is_positive_int(string):
@@ -66,10 +74,10 @@ class PostQuerySet(models.query.QuerySet):
         try:
             if board.db_expiry_duration:
                 oldest = datetime.now() - timedelta(days=board.db_expiry_duration)
-                posts = self.filter(db_board=board, db_date_created__gte=oldest)\
-                    .order_by('db_date_created')
+                posts = self.filter(db_board=board).filter(Q(db_date_created__gte=oldest) | Q(db_pinned=True))\
+                    .order_by('-db_pinned', 'db_date_created')
             else:
-                posts = self.filter(db_board=board).order_by('db_date_created')
+                posts = self.filter(db_board=board).order_by('-db_pinned', 'db_date_created')
 
             if board.db_expiry_maxposts and board.db_expiry_maxposts > 0:
                 posts = posts[-board.db_expiry_maxposts:]

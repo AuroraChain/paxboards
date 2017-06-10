@@ -231,7 +231,7 @@ class BoardCmd(default_cmds.MuxCommand):
                         datestring += str(post.db_date_created.day).rjust(2, '0')
 
                         table.add_row(unreadstring + self.lhs + "/" + str(counter), post.db_poster_name,
-                                      post.db_subject, datestring)
+                                      post.subject, datestring)
 
                     self.msg(table)
                 else:
@@ -244,6 +244,29 @@ class BoardCmd(default_cmds.MuxCommand):
                     post.save()
 
                     return
+
+        if "pin" in self.switches or "unpin" in self.switches:
+            result = self.resolve_id(self.lhs)
+            if not result:
+                return
+
+            post = result["post"]
+            board = result["board"]
+
+            if not post:
+                self.msg("Unable to find post matching " + self.lhs)
+                return
+
+            if not board.access(caller, access_type='pin', default=False):
+                self.msg("You don't have permission to pin posts on that board.")
+                return
+
+            pinvalue = "pin" in self.switches
+            post.db_pinned = pinvalue
+            post.save()
+
+            self.msg("Pinned.") if pinvalue else self.msg("Unpinned.")
+            return
 
         if "scan" in self.switches:
             table = evtable.EvTable("#", "Name", "Unread", "Total", "Sub'd")
