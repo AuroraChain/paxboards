@@ -2,7 +2,7 @@
 
 A simple, extensible, threaded bulletin board system for Evennia, with both on-game and web-based interfaces.  The on-game interface is modeled loosely after Firan's fork of Myrddin's BBoard system, or after Arx's bboard system.  The web interface is modeled loosely after phpBB type web-forums.
 
-Paxboards was originally written by Rachel "Packetdancer" Blackman, a.k.a. "Pax", for use on Aurora Chain.
+Paxboards was originally written by Packetdancer, a.k.a. "Pax", for use on Aurora Chain.
 
 ## Installation
 
@@ -65,6 +65,6 @@ It supports some simple tools to check whether or not a player has access to per
 ## TODO
 
 * The DefaultBoard/Post APIs could be cleaned up considerably; we shouldn't be dipping into the models' `db_*` fields for basic access outside of the classes themselves.
-* The web interface needs the post/reply functionality.
 * The web interface also seriously needs better templates.  It's kind of ugly right now.
 * The helpfile for bboard could be a lot better.
+* As this was my first major Evennia code and I was just off in my own corner with it, there's probably places I could've done things more 'properly'.
