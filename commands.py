@@ -9,6 +9,23 @@ from board_utils import *
 from boards import DefaultBoard
 from models import Post
 
+def is_positive_int(string):
+    """
+    Tests whether the given string is a plain, positive integer.
+
+    Args:
+        string (str): A string to test.
+
+    Returns:
+        True if the string is an integer greater than 0, False if not.
+    """
+    try:
+        test = int(string)
+        if test > 0:
+            return True
+        return False
+    except ValueError:
+        return False
 
 class BoardAdminCmd(default_cmds.MuxCommand):
     """
@@ -84,6 +101,62 @@ class BoardAdminCmd(default_cmds.MuxCommand):
             self.msg("Lock(s) applied.")
             string = "Current locks on %s: %s" % (board.name, board.locks)
             self.msg(string)
+            return
+
+        if "maxdays" in self.switches:
+            if not self.args:
+                self.msg("You must provide parameters!")
+                return
+
+            if not self.lhs:
+                self.msg("You must provide a bboard name!")
+                return
+
+            if self.rhs and not is_positive_int(self.rhs):
+                self.msg("Your max days value must be a positive integer.")
+                return
+
+            board = DefaultBoard.objects.get_board(self.lhs)
+            if not board:
+                self.msg("No board matches '" + self.lhs + "'")
+                return
+
+            if not self.rhs:
+                board.db_expiry_duration = None
+                self.msg("Cleared maximum day duration on board.")
+            else:
+                board.db_expiry_duration = int(self.rhs)
+                self.msg("Board expiry set to " + str(board.db_expiry_duration) + " days.")
+
+            board.save()
+            return
+
+        if "maxposts" in self.switches:
+            if not self.args:
+                self.msg("You must provide parameters!")
+                return
+
+            if not self.lhs:
+                self.msg("You must provide a bboard name!")
+                return
+
+            if self.rhs and not is_positive_int(self.rhs):
+                self.msg("Your max posts value must be a positive integer.")
+                return
+
+            board = DefaultBoard.objects.get_board(self.lhs)
+            if not board:
+                self.msg("No board matches '" + self.lhs + "'")
+                return
+
+            if not self.rhs:
+                board.db_expiry_maxposts = None
+                self.msg("Cleared maximum post count on board.")
+            else:
+                board.db_expiry_maxposts = int(self.rhs)
+                self.msg("Board post maximum set to " + str(board.db_expiry_maxposts) + " posts.")
+
+            board.save()
             return
 
         self.msg("Unknown switch.  Please see {555help " + self.cmdstring + "{n for help.")

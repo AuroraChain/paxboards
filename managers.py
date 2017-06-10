@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from django.db import models
 from django.db.models import Q
+from itertools import chain
 from evennia.typeclasses.managers import (TypedObjectManager, TypeclassManager,
                                           returns_typeclass_list, returns_typeclass)
 
@@ -79,8 +80,17 @@ class PostQuerySet(models.query.QuerySet):
             else:
                 posts = self.filter(db_board=board).order_by('-db_pinned', 'db_date_created')
 
-            if board.db_expiry_maxposts and board.db_expiry_maxposts > 0:
-                posts = posts[-board.db_expiry_maxposts:]
+            # This is a little unfortunate
+            if board.db_expiry_maxposts and (board.db_expiry_maxposts > 0) and \
+                    (board.db_expiry_maxposts <= posts.count()):
+                pinned_count = self.filter(db_board=board, db_pinned=True).count()
+                max_normal = board.db_expiry_maxposts - (pinned_count + 1)
+
+                firstpost = posts[::-1][max_normal]
+
+                posts = self.filter(Q(db_board=board) & (Q(db_pinned=True) | (Q(pk__gte=firstpost.id)))) \
+                        .order_by('-db_pinned','db_date_created')
+
 
             return posts
 
