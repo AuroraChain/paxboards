@@ -9,10 +9,10 @@
             <tr>
                 <td style="border-top: 1px solid black; border-bottom: 1px solid black">
                     <span style="font-size: larger">{% if thread.unread %}<b>{% endif %}
-                        <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.db_subject }}</a>
+                        <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.subject }}</a>
                         {% if thread.unread %}</b>{% endif %}</span>
                     <br/>
-                    Originally posted by <b>{{ thread.db_poster_name }}</b> on {{ thread.db_date_created }}
+                    Originally posted by <b>{{ thread.posted_by }}</b> on {{ thread.db_date_created }}
                 </td>
                 <td align="right" valign="bottom" style="border-top: 1px solid black; border-bottom: 1px solid black">
                     Last post by <b>{{ thread.last_poster }}</b>

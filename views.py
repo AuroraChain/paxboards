@@ -8,8 +8,8 @@ from evennia.utils import ansi
 
 
 def boardlist(request):
-    if not request.user:
-        return render(request, 'board_noperm.html', context)
+    if not request.user.is_authenticated or request.user.username == "":
+        return render(request, 'login.html', {})
 
     boards = DefaultBoard.objects.get_all_visible_boards(request.user)
     context = {'boards': boards}
@@ -18,15 +18,17 @@ def boardlist(request):
 
 
 def board(request, board_id):
+    if not request.user.is_authenticated or request.user.username == "":
+        return render(request, 'login.html', {})
+
     try:
         board = DefaultBoard.objects.get(pk=board_id)
-
-        context = {'board': board}
 
         if not board.access(request.user, access_type="read", default=False):
             return render(request, 'board_noperm.html', context)
 
         threads = board.threads(request.user)
+
         context = {'board': board, 'threads': threads}
 
         return render(request, 'board.html', context)
@@ -36,6 +38,9 @@ def board(request, board_id):
 
 
 def post(request, board_id, post_id):
+    if not request.user.is_authenticated or request.user.username == "":
+        return render(request, 'login.html', {})
+
     try:
         post = Post.objects.get(pk=post_id)
 

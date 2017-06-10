@@ -131,14 +131,15 @@ class Post(SharedMemoryModel):
         """
 
         Returns:
-            The last/most recent reply Post in the reply chain, or None
+            The last/most recent reply Post in the reply chain, or self if
+            there are none.
 
         """
         posts = Post.objects.filter(db_parent=self).order_by('db_date_created')
         if posts:
-            return posts[-1]
+            return posts.last()
 
-        return None
+        return self
 
 
     @property
@@ -155,6 +156,17 @@ class Post(SharedMemoryModel):
             result = "[Pinned] " + result
 
         return result
+
+    @property
+    def date_for_sort(self):
+        if hasattr(self,'last_post_on'):
+            return getattr(self, 'last_post_on')
+
+        return self.db_date_created
+
+    @property
+    def posted_by(self):
+        return self.db_poster_name
 
     @property
     def poster(self):

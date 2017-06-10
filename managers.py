@@ -132,7 +132,7 @@ class PostQuerySet(models.query.QuerySet):
                 else:
                     setattr(p, "db_unread", True)
 
-        return sorted(posts, key=sort_date, reverse=True)
+        return sorted(posts, key=lambda p: (p.db_pinned, p.date_for_sort), reverse=True)
 
 
 class PostManager(TypedObjectManager):

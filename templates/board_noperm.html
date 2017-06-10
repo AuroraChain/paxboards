@@ -4,6 +4,6 @@
     <h1>Permission Denied</h1>
     <p>Sorry, you don't have permission to read that board!</p>
 {% else %}
-    <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+    <p>Please <a href="{% url 'login'%}">login</a> before trying to access the boards</p>
 {% endif %}
 {% endblock %}
