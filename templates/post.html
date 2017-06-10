@@ -12,8 +12,25 @@
         </tr>
     </table>
     <hr/>
-    <div style="white-space: pre-wrap; font-family: monospace;;">{{ text }}</div>
-    <hr/>
+    <div style="white-space: pre-wrap; font-family: monospace;;">{{ post.plaintext }}</div><p/>
+    {% if replies %}
+        <p/>
+        <table width="100%">
+        {% for reply in replies %}
+            <tr>
+                <td width="30%" style="border-top: 1px solid black">{{ reply.db_poster_name }}</td>
+                <td align="right" width="100%" style="border-top: 1px solid black"> {{ reply.db_date_created }}</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div style="white-space: pre-wrap; font-family: monospace;;">{{ reply.plaintext }}</div>
+                    <p/>
+                </td>
+            </tr>
+        {% endfor %}
+        </table>
+        <br clear="all"/>
+    {% endif %}
 {% else %}
     <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
 {% endif %}

@@ -11,6 +11,13 @@ _BoardDB = None
 _SESSIONS = None
 
 
+def sort_date(post):
+    if hasattr(post, "last_post_on"):
+        return getattr(post, "last_post_on")
+
+    return 0
+
+
 def is_positive_int(string):
     """
     Tests whether the given string is a plain, positive integer.
@@ -88,11 +95,36 @@ class PostQuerySet(models.query.QuerySet):
         posts = self.by_board(board)
         for p in posts:
             if player.read_posts.filter(pk=p.id).exists():
-                setattr(p,"db_unread",False)
+                setattr(p, "db_unread", False)
             else:
-                setattr(p,"db_unread",True)
+                setattr(p, "db_unread", True)
 
         return posts
+
+    def by_board_threaded_player(self, board, player):
+        """
+        Return just all the threads.
+
+        Args:
+            board: The board to get threads for
+            player: The player whose unread states should be used
+
+        Returns:
+            A list of Post objects
+
+        """
+        posts = self.filter(db_board=board).filter(db_parent__isnull=True)
+        for p in posts:
+            lr = p.last_reply
+            setattr(p, "last_post_on", lr.db_date_created)
+            setattr(p, "last_poster", lr.db_poster_name)
+            if player:
+                if player.read_posts.filter(pk=lr.id).exists():
+                    setattr(p, "db_unread", False)
+                else:
+                    setattr(p, "db_unread", True)
+
+        return sorted(posts, key=sort_date, reverse=True)
 
 
 class PostManager(TypedObjectManager):
@@ -120,6 +152,20 @@ class PostManager(TypedObjectManager):
             return self.get_queryset().by_board(board)
         else:
             return self.get_queryset().by_board_for_player(board, player)
+
+    @returns_typeclass_list
+    def threads(self, board, player=None):
+        """
+        Given a board and an optional player, return the threads.
+
+        Args:
+            board:
+            player:
+
+        Returns:
+
+        """
+        return self.get_queryset().by_board_threaded_player(board, player)
 
     @returns_typeclass_list
     def search(self, searchstring, board=None):

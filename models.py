@@ -118,6 +118,16 @@ class Post(SharedMemoryModel):
         posts = Post.objects.posts(self.db_board)
         return posts.index(self) + 1 if self in posts else None
 
+    @property
+    def last_reply(self):
+        posts = Post.objects.filter(db_parent=self)
+        result = self
+        for p in posts:
+            test = p.last_reply
+            if test and (result.db_date_created < test.db_date_created):
+                result = test
+        return result
+
     def display_post(self, player, show_replies=False):
         post_num = self.post_num
 

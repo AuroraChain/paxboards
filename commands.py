@@ -529,6 +529,11 @@ class BoardCmd(default_cmds.MuxCommand):
                 return
 
             # TODO: Should we delete this or just unlink it?
+            replies = Post.objects.filter(db_parent=post)
+            for r in replies:
+                r.db_parent = post.db_parent
+                r.save()
+
             post.delete()
             self.msg("Post deleted.")
             return

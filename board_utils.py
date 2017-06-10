@@ -5,3 +5,4 @@ def is_int(string):
         return True
     except ValueError:
         return False
+

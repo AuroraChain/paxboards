@@ -5,23 +5,19 @@
     <h1>{{ board.name }}</h1>
     <br/>
     <table width="90%">
-        <tr>
-            <th align="left" style="border-bottom: 1px solid black;">Title</th>
-            <th align="left" style="border-bottom: 1px solid black;">Poster</th>
-            <th align="left" style="border-bottom: 1px solid black;">Date</th>
-        </th>
-        {% for post in posts %}
+        {% for thread in threads %}
             <tr>
-                <td>
-                    {% if post.unread %}<b>{% endif %}
-                        <a href="/boards/{{ board.id }}/{{ post.id }}/">{{ post.db_subject }}</a>
-                    {% if post.unread %}</b>{% endif %}
+                <td style="border-top: 1px solid black; border-bottom: 1px solid black">
+                    <span style="font-size: larger">{% if thread.unread %}<b>{% endif %}
+                        <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.db_subject }}</a>
+                        {% if thread.unread %}</b>{% endif %}</span>
+                    <br/>
+                    Originally posted by <b>{{ thread.db_poster_name }}</b> on {{ thread.db_date_created }}
                 </td>
-                <td>
-                    {{ post.db_poster_name }}
-                </td>
-                <td>
-                    {{ post.db_date_created }}
+                <td align="right" valign="bottom" style="border-top: 1px solid black; border-bottom: 1px solid black">
+                    Last post by <b>{{ thread.last_poster }}</b>
+                    <br/>
+                    on {{ thread.last_post_on }}
                 </td>
             </tr>
         {% endfor %}

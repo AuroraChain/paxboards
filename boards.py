@@ -35,6 +35,19 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
         """
         return Post.objects.posts(self, player=player)
 
+    def threads(self, player=None):
+        """
+        Convenience function, pulls all the threads for a given player's viewpoint.
+
+        Args:
+            player: The player whose read/unread status should be used.  If non, omits unread.
+
+        Returns:
+            A list of posts representing the threads.
+
+        """
+        return Post.objects.threads(self, player=player)
+
     def subscribers(self):
         """
         Obtain all the Players subscribed to this board.

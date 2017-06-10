@@ -26,8 +26,8 @@ def board(request, board_id):
         if not board.access(request.user, access_type="read", default=False):
             return render(request, 'board_noperm.html', context)
 
-        posts = board.posts(request.user)
-        context = {'board': board, 'posts': posts}
+        threads = board.threads(request.user)
+        context = {'board': board, 'threads': threads}
 
         return render(request, 'board.html', context)
 
@@ -45,9 +45,16 @@ def post(request, board_id, post_id):
             return render(request, 'board_noperm.html', context)
 
         plaintext = ansi.strip_ansi(post.db_text)
-        context = {'board': board, 'post': post, 'text': plaintext}
-
+        setattr(post, 'plaintext', plaintext)
         post.mark_read(request.user, True)
+
+        replies = Post.objects.filter(db_parent=post).order_by('db_date_created')
+        for r in replies:
+            plaintext = ansi.strip_ansi(r.db_text)
+            setattr(r, 'plaintext', plaintext)
+            r.mark_read(request.user, True)
+
+        context = {'board': board, 'post': post, 'replies': replies}
 
         return render(request, 'post.html', context)
 
