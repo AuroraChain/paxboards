@@ -21,6 +21,8 @@ custom_patterns = [
 
 If you already have custom patterns, just add the url record to your existing list.
 
+If you want to link the boards from anywhere on your website, simply use `{% url 'paxboards:boardlist' %}` in any template file to automatically generate the appropriate URL for your site installation.
+
 If you want to administer bboards from the Django web admin console, you'll also need to modify the Evennia package itself, editing `evennia_admin.py` in order to add the following to the list of administrative sections:
 
 ```
