@@ -1,13 +1,13 @@
 # URL patterns for the character app
 
 from django.conf.urls import url
-from paxboards.views import boardlist
-from paxboards.views import board
-from paxboards.views import post
+from paxboards.views import show_boardlist, show_board, show_thread, submit_post, submit_reply
 
 urlpatterns = [
-    url(r'^$', boardlist, name="boardlist"),
-    url(r'^all/$', boardlist, name="boardlist"),
-    url(r'^(?P<board_id>\d+)/$', board, name="board"),
-    url(r'^(?P<board_id>\d+)/(?P<post_id>\d+)/$', post, name="post"),
+    url(r'^$', show_boardlist, name="boardlist"),
+    url(r'^all/$', show_boardlist, name="boardlist"),
+    url(r'^(?P<board_id>\d+)/$', show_board, name="board"),
+    url(r'^(?P<board_id>\d+)/(?P<post_id>\d+)/$', show_thread, name="thread"),
+    url(r'^post/(?P<board_id>\d+)/$', submit_post, name="post"),
+    url(r'^reply/(?P<board_id>\d+)/(?P<post_id>\d+)/$', submit_reply, name="reply"),
 ]

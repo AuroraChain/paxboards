@@ -4,6 +4,11 @@
     <p><a href="..">Back to board list</a></p>
     <h1>{{ board.name }}</h1>
     <br/>
+    {% if can_post %}
+        <div style="align: right">
+            <a href="/boards/post/{{ board.id }}">Post New Thread</a>
+        </div>
+    {% endif %}
     <table width="90%">
         {% for thread in threads %}
             <tr>
