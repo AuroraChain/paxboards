@@ -10,7 +10,7 @@
         </tr>
     </table>
     <hr/>
-    <div style="white-space: pre-wrap; font-family: monospace;;">{{ post.plaintext }}</div><p/>
+    <div style="white-space: pre-wrap; font-family: monospace;;">{{ post.plaintext|urlize }}</div><p/>
     {% if replies %}
         <p/>
         <table width="100%">
@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <div style="white-space: pre-wrap; font-family: monospace;;">{{ reply.plaintext }}</div>
+                    <div style="white-space: pre-wrap; font-family: monospace;;">{{ reply.plaintext|urlize }}</div>
                     <p/>
                 </td>
             </tr>
