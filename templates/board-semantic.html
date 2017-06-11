@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<nav><a href="..">Back to board list</a></nav>
+<h1>{{ board.name }}</h1>
+<br/>
+{% if can_post %}
+<div style="align: right">
+  <a href="post/">Post New Thread</a>
+</div>
+{% endif %}
+
+
+{% for thread in threads %}
+<section style="position: relative; height: 75px;">
+  <article style="position: absolute; width: 75%; height: 100%; border-top: 1px solid black; border-bottom: 1px solid black">
+    <h2 style="font-size: 1.2em; font-weight: normal; margin: .4em 0;{% if thread.is_unread %}font-weight: bolder;{% endif %}">
+      <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.subject }}</a>
+    </h2>
+    Originally posted by <strong>{{ thread.posted_by }}</strong> on <time>{{ thread.db_date_created }}</time>
+  </article>
+  <aside style="float:right; width: 25%; min-width: 130px; height: 100%; text-align: right; border-top: 1px solid black; border-bottom: 1px solid black">
+    Last post by <strong>{{ thread.last_poster }}</strong>
+    <br/>
+    on <time>{{ thread.last_post_on }}</time>
+  </aside>
+</section>
+{% endfor %}
+{% else %}
+<p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+{% endif %}
+{% endblock %}
