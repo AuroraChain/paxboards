@@ -37,7 +37,7 @@
 {% endif %}
 
 {% if can_post %}
-<form action="reply/" method="post">
+<form class="submit reply" action="reply/" method="post">
   {% csrf_token %}
   <table width="100%" style="border-top: 1px solid black">
     {{ form.as_table }}
