@@ -92,7 +92,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
 
         posts = self.posts(caller)
         for p in posts:
-            if p.unread:
+            if p.is_unread:
                 p.mark_read(caller, True)
 
         return

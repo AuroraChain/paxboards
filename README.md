@@ -25,6 +25,8 @@ custom_patterns = [
 
 If you already have custom patterns, just add the url record to your existing list.
 
+When all of this is done, run `evennia makemigrations` and `evennia migrate`, then execute `@reload` on your game, and you should be good to go.
+
 ### Updating Templates
 
 If you want to link the boards from anywhere on your website, simply use `{% url 'paxboards:boardlist' %}` in any template file to automatically generate the appropriate URL for your site installation.
@@ -37,8 +39,6 @@ If you want to administer bboards from the Django web admin console, you'll also
     <h2><a href="{% url "admin:paxboards_boarddb_changelist" %}">Boards</a></h2>
     Boards are used for static player communications.
 ```
-
-When all of this is done, run `evennia makemigrations paxboards` and `evennia migrate`, then execute `@reload` on your game, and you should be good to go.
 
 ## Components
 

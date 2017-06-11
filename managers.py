@@ -113,9 +113,9 @@ class PostQuerySet(models.query.QuerySet):
         posts = self.by_board(board)
         for p in posts:
             if player.read_posts.filter(pk=p.id).exists():
-                setattr(p, "db_unread", False)
+                setattr(p, "unread", False)
             else:
-                setattr(p, "db_unread", True)
+                setattr(p, "unread", True)
 
         return posts
 
@@ -138,9 +138,9 @@ class PostQuerySet(models.query.QuerySet):
             setattr(p, "last_poster", lr.db_poster_name)
             if player:
                 if player.read_posts.filter(pk=lr.id).exists():
-                    setattr(p, "db_unread", False)
+                    setattr(p, "unread", False)
                 else:
-                    setattr(p, "db_unread", True)
+                    setattr(p, "unread", True)
 
         return sorted(posts, key=lambda p: (p.db_pinned, p.date_for_sort), reverse=True)
 
@@ -285,11 +285,15 @@ class BoardDBManager(TypedObjectManager):
             all_posts = b.posts(caller)
             unread = 0
             for p in all_posts:
-                if p.db_unread:
+                if p.is_unread:
                     unread = unread + 1
 
-            setattr(b,"db_unread_count", unread)
-            setattr(b,"db_total_count", len(all_posts))
+            setattr(b,"unread_count", unread)
+            setattr(b,"total_count", len(all_posts))
+
+            if all_posts:
+                last_post = all_posts[:-1]
+                setattr(b,"last_post", last_post)
 
         return filtered
 
@@ -322,11 +326,11 @@ class BoardDBManager(TypedObjectManager):
                 all_posts = b.posts(viewer)
                 unread = 0
                 for p in all_posts:
-                    if p.db_unread:
+                    if p.is_unread:
                         unread = unread + 1
 
-                setattr(b, "db_unread_count", unread)
-                setattr(b, "db_total_count", len(all_posts))
+                setattr(b, "unread_count", unread)
+                setattr(b, "total_count", len(all_posts))
 
                 return b
 

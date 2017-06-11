@@ -12,7 +12,7 @@
             {% for board in boards %}
             <tr>
                 <td><a href="/boards/{{ board.id }}/">{{ board.name }}</a></td>
-                <td>{{ board.db_unread_count }}</td>
+                <td>{{ board.unread_count }}</td>
             </tr>
             {% endfor %}
         </table>

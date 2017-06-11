@@ -13,9 +13,9 @@
         {% for thread in threads %}
             <tr>
                 <td style="border-top: 1px solid black; border-bottom: 1px solid black">
-                    <span style="font-size: larger">{% if thread.unread %}<b>{% endif %}
+                    <span style="font-size: larger">{% if thread.is_unread %}<b>{% endif %}
                         <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.subject }}</a>
-                        {% if thread.unread %}</b>{% endif %}</span>
+                        {% if thread.is_unread %}</b>{% endif %}</span>
                     <br/>
                     Originally posted by <b>{{ thread.posted_by }}</b> on {{ thread.db_date_created }}
                 </td>

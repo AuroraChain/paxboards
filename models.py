@@ -46,13 +46,6 @@ class Post(SharedMemoryModel):
 
     objects = PostManager()
 
-    @property
-    def unread(self):
-        if not hasattr(self, "db_unread"):
-            return False
-
-        return self.db_unread
-
     class Meta(object):
         "Define Django meta options"
         verbose_name = "Post"
@@ -60,7 +53,7 @@ class Post(SharedMemoryModel):
 
     def __str__(self):
         return "<Post " + str(self.id) + " by " + self.db_poster_name + ": " + self.db_subject + \
-        ("(unread)>" if self.unread else "(none)>" if not hasattr(self,"db_unread") else ">")
+        ("(unread)>" if self.is_unread else "(none)>" if not hasattr(self,"unread") else ">")
 
     def __unicode__(self):
         return unicode(str(self))
@@ -141,13 +134,12 @@ class Post(SharedMemoryModel):
 
         return self
 
-
     @property
     def is_unread(self):
-        if hasattr(self, 'db_unread'):
-            return getattr(self, 'db_unread')
+        if hasattr(self, 'unread'):
+            return getattr(self, 'unread')
 
-        return True
+        return False
 
     @property
     def subject(self):

@@ -272,7 +272,7 @@ class BoardCmd(default_cmds.MuxCommand):
                     if board.subscribers().filter(pk=caller.pk).exists():
                         subbed = "Yes"
 
-                    table.add_row(counter, board.name, board.db_unread_count, board.db_total_count, subbed)
+                    table.add_row(counter, board.name, board.unread_count, board.total_count, subbed)
 
                 self.msg(table)
             else:
@@ -296,7 +296,7 @@ class BoardCmd(default_cmds.MuxCommand):
                         counter += 1
 
                         unreadstring = "  "
-                        if post.unread:
+                        if post.is_unread:
                             unreadstring = "|555*|n "
 
                         datestring = str(post.db_date_created.year) + "/"
@@ -352,9 +352,9 @@ class BoardCmd(default_cmds.MuxCommand):
                 if board.subscribers().filter(pk=caller.pk).exists():
                     subbed = "Yes"
 
-                if board.db_unread_count > 0:
+                if board.unread_count > 0:
                     has_unread = True
-                    table.add_row(counter, board.name, board.db_unread_count, board.db_total_count, subbed)
+                    table.add_row(counter, board.name, board.unread_count, board.total_count, subbed)
 
             if has_unread:
                 self.msg(table)
@@ -367,7 +367,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 for b in boards:
                     posts = b.posts(caller)
                     for p in posts:
-                        if p.unread:
+                        if p.is_unread:
                             p.display_post(caller)
                             p.mark_read(caller, True)
                             return
@@ -385,7 +385,7 @@ class BoardCmd(default_cmds.MuxCommand):
             postcounter = 0
             for p in posts:
                 postcounter += 1
-                if p.unread:
+                if p.is_unread:
                     p.display_post(caller)
                     p.mark_read(caller, True)
                     return
