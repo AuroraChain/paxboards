@@ -12,7 +12,7 @@ def show_boardlist(request):
         return render(request, 'login.html', {})
 
     boards = DefaultBoard.objects.get_all_visible_boards(request.user)
-    context = {'boards': boards}
+    context = {'boards': boards, 'page_title': 'Forums'}
     # make the variables in 'context' available to the web page template
     return render(request, 'boardlist.html', context)
 
@@ -32,7 +32,7 @@ def show_board(request, board_id):
         threads = board.threads(request.user)
 
         context = {'board': board, 'threads': threads, 'can_post': can_post,
-                   'board_id': board.id}
+                   'board_id': board.id, 'page_title': 'Forums - ' + board.name}
 
         return render(request, 'board.html', context)
 
@@ -65,7 +65,8 @@ def show_thread(request, board_id, post_id):
 
         form = ReplyForm()
         context = {'board': board, 'post': post, 'replies': replies, 'can_post': can_post,
-                   'board_id': board, 'post_id': post, 'form': form}
+                   'board_id': board, 'post_id': post, 'form': form,
+                  'page_title': 'Forums - ' + post.db_subject}
 
         return render(request, 'thread.html', context)
 
