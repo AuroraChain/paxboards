@@ -11,15 +11,17 @@
             </tr>
             {% for board in boards %}
             <tr>
-                <td>
+                <td style="border-bottom: 1px solid black">
                     {% if board.is_unread %}<b>{% endif %}
                     <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
                     {% if board.is_unread %}</b>{% endif %}
                 </td>
-                <td align="right">
+                <td style="border-bottom: 1px solid black" align="right">
                     {% if board.last_post %}
                         {{ board.last_post.poster }}<br/>
                         {{ board.last_post.db_date_created }}
+                    {% else %}
+                        &nbsp;<br/>&nbsp;
                     {% endif %}
                 </td>
             </tr>
