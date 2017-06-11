@@ -97,6 +97,12 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
 
         return
 
+    def is_unread(self):
+        if hasattr(self, 'unread_count'):
+            return getattr(self, 'unread_count') > 0
+
+        return False
+
     def create_post(self, subject, text, author_name=settings.SERVERNAME, author_player=None, author_object=None,
                     parent=None):
         """

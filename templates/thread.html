@@ -30,7 +30,7 @@
         <br clear="all"/>
     {% endif %}
     {% if can_post %}
-        <form action="/boards/reply/{{ board.id }}/{{ post.id }}/" method="post">
+        <form action="reply/" method="post">
             {% csrf_token %}
             <table width="100%" style="border-top: 1px solid black">
                 {{ form.as_table }}

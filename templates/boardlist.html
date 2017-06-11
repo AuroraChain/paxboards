@@ -7,12 +7,21 @@
         <table width="70%">
             <tr>
                 <th align="left" style="border-bottom: 1px solid black">Board</th>
-                <th align="left" style="border-bottom: 1px solid black">Unread Posts</th>
+                <th align="right" style="border-bottom: 1px solid black">Last Post</th>
             </tr>
             {% for board in boards %}
             <tr>
-                <td><a href="/boards/{{ board.id }}/">{{ board.name }}</a></td>
-                <td>{{ board.unread_count }}</td>
+                <td>
+                    {% if board.is_unread %}<b>{% endif %}
+                    <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
+                    {% if board.is_unread %}</b>{% endif %}
+                </td>
+                <td align="right">
+                    {% if board.last_post %}
+                        {{ board.last_post.poster }}<br/>
+                        {{ board.last_post.db_date_created }}
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </table>

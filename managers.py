@@ -292,7 +292,8 @@ class BoardDBManager(TypedObjectManager):
             setattr(b,"total_count", len(all_posts))
 
             if all_posts:
-                last_post = all_posts[:-1]
+                last_post = all_posts[-1]
+                print("Got last post: " + str(last_post))
                 setattr(b,"last_post", last_post)
 
         return filtered
