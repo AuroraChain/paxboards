@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+    <h1>BBoards</h1>
+    {% if boards %}
+        <br/>
+        <table width="100%">
+            <tr>
+                <th align="left" style="border-bottom: 1px solid black">Board</th>
+                <th align="right" style="border-bottom: 1px solid black">Last Post</th>
+            </tr>
+            {% for board in boards %}
+            <tr>
+                <td style="border-bottom: 1px solid black">
+                    {% if board.is_unread %}<b>{% endif %}
+                    <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
+                    {% if board.is_unread %}</b>{% endif %}
+                </td>
+                <td style="border-bottom: 1px solid black" align="right">
+                    {% if board.last_post %}
+                        {{ board.last_post.poster }}<br/>
+                        {{ board.last_post.db_date_created }}
+                    {% else %}
+                        &nbsp;<br/>&nbsp;
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>There are no available bboards.</p>
+    {% endif %}
+{% else %}
+    <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+{% endif %}
+{% endblock %}

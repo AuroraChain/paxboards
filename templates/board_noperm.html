@@ -1,9 +1,17 @@
 {% extends "base.html" %}
+<link rel="stylesheet" href="bboards.css">
 {% block content %}
+<header class="top">
+  <nav class="breadcrumbs"><a href="..">Back to board list</a></nav>
+  <h1>{{ board.name }}</h1>
+  <br/>
+</header>
+<article class="error">
 {% if user.is_authenticated %}
-    <h1>Permission Denied</h1>
-    <p>Sorry, you don't have permission to read that board!</p>
+    <h2>Permission Denied</h2>
+    Sorry, you don't have permission to read that board!
 {% else %}
-    <p>Please <a href="{% url 'login'%}">login</a> before trying to access the boards</p>
+    Please <a href="{% url 'login'%}">login</a> before trying to access the boards
 {% endif %}
+</article>
 {% endblock %}

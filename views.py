@@ -37,7 +37,8 @@ def show_board(request, board_id):
         return render(request, 'board.html', context)
 
     except (DefaultBoard.DoesNotExist, DefaultBoard.MultipleObjectsReturned):
-        return render(request, 'board_noperm.html', {})
+        context = {'board': board}
+        return render(request, 'board_noperm.html', context)
 
 
 def show_thread(request, board_id, post_id):
@@ -49,7 +50,8 @@ def show_thread(request, board_id, post_id):
         board = post.db_board
 
         if not board.access(request.user, access_type="read", default=False):
-            return render(request, 'board_noperm.html', {})
+            context = {'board': board}
+            return render(request, 'board_noperm.html', context)
 
         can_post = board.access(request.user, access_type="post", default=False)
 
@@ -81,7 +83,8 @@ def submit_post(request, board_id):
         board = DefaultBoard.objects.get(pk=board_id)
 
         if not board.access(request.user, access_type="post", default=False):
-            return render(request, 'board_noperm.html', {})
+            context = {'board': board}
+            return render(request, 'board_noperm.html', context)
 
         if request.method == "POST":
             # Actual submission
@@ -131,4 +134,3 @@ def submit_reply(request, board_id, post_id):
 
     except (Board.DoesNotExist, Board.MultipleObjectsReturned, Post.DoesNotExist, Post.MultipleObjectsReturned):
         return Http404("Error accessing boards.")
-

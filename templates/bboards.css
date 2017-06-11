@@ -1,0 +1,47 @@
+header.top {}
+nav.breadcrumbs::before {
+  content: "\01f4ac";
+}
+h1.generic::before {
+  content: "BBoards";
+}
+aside.new-thread {
+  align: right;
+}
+
+hgroup.board-header {
+  position: relative; height: 75px;
+}
+hgroup.board-header header {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+div.listing {}
+
+section.entry {
+  position: relative; height: 75px; border-top: 1px solid black; border-bottom: 1px solid black;
+}
+section.entry h2, article.error h2 {
+  font-size: 1.2em; font-weight: normal; margin: .4em 0;
+}
+
+.board-name {
+  position: absolute; width: 40%; height: 100%;
+}
+.board-last-post {
+  position: absolute; left: 40%; width: 40%; height: 100%;
+}
+.board-unread-posts {
+  position: absolute; left: 80%; width: 10%; height: 100%;
+}
+.board-total-posts {
+  position: absolute; left: 90%; width: 10%; height: 100%;
+}
+
+.thread-name {
+  position: absolute; width: 75%; height: 100%;
+}
+.thread-last-post {
+  float:right; width: 25%; min-width: 130px; height: 100%; text-align: right;
+}

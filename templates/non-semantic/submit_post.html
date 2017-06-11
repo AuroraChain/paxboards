@@ -1,18 +1,7 @@
 {% extends "base.html" %}
-<link rel="stylesheet" href="bboards.css">
 {% block content %}
 {% if user.is_authenticated %}
-<header class="top">
-  <nav class="breadcrumbs"><a href="..">Back to board list</a></nav>
-  <h1><a href="/boards/{{ board_id }}/">{{ board.name }}</a></h1>
-  <br/>
-  {% if can_post %}
-  <aside class="new-thread">
-    <a href="post/">Post New Thread</a>
-  </aside>
-  {% endif %}
-</header>
-    <h1></h1>
+    <h1><a href="/boards/{{ board_id }}/">{{ board.name }}</a></h1>
     <br/>
     <form method="post">
         {% csrf_token %}

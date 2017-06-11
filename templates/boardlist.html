@@ -1,36 +1,55 @@
 {% extends "base.html" %}
+<link rel="stylesheet" href="bboards.css">
 {% block content %}
 {% if user.is_authenticated %}
-    <h1>BBoards</h1>
+<header class="top">
+  <h1 class="generic"></h1>
+</header>
     {% if boards %}
-        <br/>
-        <table width="100%">
-            <tr>
-                <th align="left" style="border-bottom: 1px solid black">Board</th>
-                <th align="right" style="border-bottom: 1px solid black">Last Post</th>
-            </tr>
-            {% for board in boards %}
-            <tr>
-                <td style="border-bottom: 1px solid black">
-                    {% if board.is_unread %}<b>{% endif %}
-                    <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
-                    {% if board.is_unread %}</b>{% endif %}
-                </td>
-                <td style="border-bottom: 1px solid black" align="right">
+    <hgroup class="board-header">
+      <header class="board-name">
+        Board
+      </header>
+      <header class="board-last-post">
+        Last Post
+      </header>
+      <header class="board-unread-posts">
+        Unread
+      </header>
+      <header class="board-total-posts">
+        Total
+      </header>
+    </hgroup>
+    <div class="listing">
+          {% for board in boards %}
+            <section class="entry">
+              <article class="board-name">
+                    <h2 style="{% if board.is_unread %}font-weight:bolder{% endif %}">
+                      <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
+                    </h2>
+              </article>
+                <aside class="board-last-post">
                     {% if board.last_post %}
                         {{ board.last_post.poster }}<br/>
-                        {{ board.last_post.db_date_created }}
+                        <time>{{ board.last_post.db_date_created }}</time>
                     {% else %}
                         &nbsp;<br/>&nbsp;
                     {% endif %}
-                </td>
-            </tr>
+                </aside>
+                <aside class="board-unread-posts">
+                    {{ board.unread_count }}
+                </aside>
+                <aside class="board-unread-posts">
+                    {{ board.total_count }}
+                </aside>
+            </section>
             {% endfor %}
-        </table>
+          </div>
     {% else %}
-        <p>There are no available bboards.</p>
+        <article class="error">There are no available bboards.</article>
     {% endif %}
+
 {% else %}
-    <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+    <article class="error">Please <a href="{% url 'login'%}">log in</a>first.</article>
 {% endif %}
 {% endblock %}
