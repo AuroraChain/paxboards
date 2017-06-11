@@ -5,51 +5,53 @@
 <header class="top">
   <h1 class="generic"></h1>
 </header>
-    {% if boards %}
-    <hgroup class="board-header">
-      <header class="board-name">
-        Board
-      </header>
-      <header class="board-last-post">
-        Last Post
-      </header>
-      <header class="board-unread-posts">
-        Unread
-      </header>
-      <header class="board-total-posts">
-        Total
-      </header>
-    </hgroup>
-    <div class="listing">
-          {% for board in boards %}
-            <section class="entry">
-              <article class="board-name">
-                    <h2 style="{% if board.is_unread %}font-weight:bolder{% endif %}">
-                      <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
-                    </h2>
-              </article>
-                <aside class="board-last-post">
-                    {% if board.last_post %}
-                        {{ board.last_post.poster }}<br/>
-                        <time>{{ board.last_post.db_date_created }}</time>
-                    {% else %}
-                        &nbsp;<br/>&nbsp;
-                    {% endif %}
-                </aside>
-                <aside class="board-unread-posts">
-                    {{ board.unread_count }}
-                </aside>
-                <aside class="board-unread-posts">
-                    {{ board.total_count }}
-                </aside>
-            </section>
-            {% endfor %}
-          </div>
-    {% else %}
-        <article class="error">There are no available bboards.</article>
-    {% endif %}
+{% if boards %}
+<hgroup class="board-header">
+  <header class="board-name">
+    Board
+  </header>
+  <header class="board-last-post">
+    Last Post
+  </header>
+  <header class="board-unread-posts">
+    Unread
+  </header>
+  <header class="board-total-posts">
+    Total
+  </header>
+</hgroup>
+<div class="listing">
+  {% for board in boards %}
+  <section class="entry">
+    <article class="board-name">
+      <h2 style="{% if board.is_unread %}font-weight:bolder{% endif %}">
+        <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
+      </h2>
+    </article>
+    <aside class="board-last-post">
+      {% if board.last_post %}
+      {{ board.last_post.poster }}<br/>
+      <time datetime="{{ board.last_post.db_date_created }}">{{ board.last_post.db_date_created }}</time>
+
+      {% else %}
+      &nbsp;<br/>&nbsp;
+      {% endif %}
+    </aside>
+    <aside class="board-unread-posts">
+      {{ board.unread_count }}
+    </aside>
+    <aside class="board-unread-posts">
+      {{ board.total_count }}
+    </aside>
+  </section>
+  {% endfor %}
+</div>
+{% else %}
+<article class="error">There are no available bboards.</article>
+{% endif %}
 
 {% else %}
-    <article class="error">Please <a href="{% url 'login'%}">log in</a>first.</article>
+<article class="error">Please <a href="{% url 'login'%}">log in</a>first.</article>
+
 {% endif %}
 {% endblock %}

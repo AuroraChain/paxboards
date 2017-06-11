@@ -7,11 +7,11 @@
   <br/>
 </header>
 <article class="error">
-{% if user.is_authenticated %}
-    <h2>Permission Denied</h2>
-    Sorry, you don't have permission to read that board!
-{% else %}
-    Please <a href="{% url 'login'%}">login</a> before trying to access the boards
-{% endif %}
+  {% if user.is_authenticated %}
+  <h2>Permission Denied</h2>
+  Sorry, you don't have permission to read that board!
+  {% else %}
+  Please <a href="{% url 'login'%}">login</a> before trying to access the boards.
+  {% endif %}
 </article>
 {% endblock %}

@@ -1,8 +1,12 @@
 {% extends "base.html" %}
+<link rel="stylesheet" href="bboards.css">
 {% block content %}
 {% if user.is_authenticated %}
-    <h1><a href="/boards/{{ board_id }}/">{{ board.name }}</a></h1>
-    <br/>
+<header class="top">
+  <nav class="breadcrumbs"><a href="..">Back to board list</a></nav>
+  <h1><a href="/boards/{{ board_id }}/">{{ board.name }}</a></h1>
+  <br/>
+</header>
     <form method="post">
         {% csrf_token %}
         <table width="100%">
@@ -11,6 +15,6 @@
         </table>
     </form>
 {% else %}
-    <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
+  <article class="error">Please <a href="{% url 'login'%}">log in</a> before trying to access the boards.</article>
 {% endif %}
 {% endblock %}

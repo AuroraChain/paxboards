@@ -17,7 +17,9 @@ hgroup.board-header header {
   font-weight: bold;
 }
 
-div.listing {}
+.listing:nth-child(2n) {
+  background-color: #AAA;
+}
 
 section.entry {
   position: relative; height: 75px; border-top: 1px solid black; border-bottom: 1px solid black;
@@ -44,4 +46,10 @@ section.entry h2, article.error h2 {
 }
 .thread-last-post {
   float:right; width: 25%; min-width: 130px; height: 100%; text-align: right;
+}
+
+.post-head {
+}
+.post-body {
+  white-space: pre-wrap; font-family: monospace;
 }

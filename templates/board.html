@@ -19,12 +19,12 @@
     <h2 style="{% if thread.is_unread %}font-weight: bolder;{% endif %}">
       <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.subject }}</a>
     </h2>
-    Originally posted by <strong>{{ thread.posted_by }}</strong> on <time>{{ thread.db_date_created }}</time>
+    Originally posted by <strong>{{ thread.posted_by }}</strong> on <time datetime="{{ thread.db_date_created }}">{{ thread.db_date_created }}</time>
   </article>
   <aside class="thread-last-post">
     Last post by <strong>{{ thread.last_poster }}</strong>
     <br/>
-    on <time>{{ thread.last_post_on }}</time>
+    on <time datetime="{{ thread.last_post_on }}">{{ thread.last_post_on }}</time>
   </aside>
 </section>
 {% endfor %}

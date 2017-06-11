@@ -115,7 +115,8 @@ def submit_reply(request, board_id, post_id):
         post = Post.objects.get(pk=post_id)
 
         if not board.access(request.user, access_type="post", default=False):
-            return render(request, 'board_noperm.html', {})
+            context = {'board': board}
+            return render(request, 'board_noperm.html', context)
 
         if request.method == "POST":
             form = ReplyForm(request.POST)
