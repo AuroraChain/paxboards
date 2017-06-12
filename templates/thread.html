@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 {% if user.is_authenticated %}
-    <h1><a href="/boards/{{ board.id }}/">{{ board.name }}</a></h1>
-    <h2>{{ post.db_subject }}</h2>
+    <p></p><a href="../..">Forums</a> &gt; <a href="..">{{ board.name }}</a> &gt; Thread</p>
+    <br/>
+    <h3>{{ post.db_subject }}</h3>
     <table width="100%">
         <tr>
             <td width="30%">{{ post.db_poster_name }}</td>
-            <td align="right" width="100%"> {{ post.db_date_created }}</td>
+            <td align="right" width="100%"> {{ post.db_date_created|timesince }}</td>
         </tr>
     </table>
     <hr/>
@@ -17,7 +18,7 @@
         {% for reply in replies %}
             <tr>
                 <td width="30%" style="border-top: 1px solid black">{{ reply.db_poster_name }}</td>
-                <td align="right" width="100%" style="border-top: 1px solid black"> {{ reply.db_date_created }}</td>
+                <td align="right" width="100%" style="border-top: 1px solid black"> {{ reply.db_date_created|timesince }}</td>
             </tr>
             <tr>
                 <td colspan="2">

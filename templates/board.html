@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% if user.is_authenticated %}
-    <p><a href="..">Back to board list</a></p>
-    <h1>{{ board.name }}</h1>
+    <p><a href="..">Forums</a> &gt; {{ board.name }}</p>
     <br/>
     {% if can_post %}
         <div style="align: right">
@@ -17,12 +16,12 @@
                         <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.subject }}</a>
                         {% if thread.is_unread %}</b>{% endif %}</span>
                     <br/>
-                    Originally posted by <b>{{ thread.posted_by }}</b> on {{ thread.db_date_created }}
+                    Originally posted by <b>{{ thread.posted_by }}</b> {{ thread.db_date_created|timesince }} ago
                 </td>
                 <td align="right" valign="bottom" style="border-top: 1px solid black; border-bottom: 1px solid black">
                     Last post by <b>{{ thread.last_poster }}</b>
                     <br/>
-                    on {{ thread.last_post_on }}
+                    {{ thread.last_post_on|timesince }} ago
                 </td>
             </tr>
         {% endfor %}

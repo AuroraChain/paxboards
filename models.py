@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from server.conf import settings
 from evennia.typeclasses.models import TypedObject
 from evennia.utils.idmapper.models import SharedMemoryModel
 from managers import PostManager

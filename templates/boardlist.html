@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 {% if user.is_authenticated %}
-    <h1>BBoards</h1>
+    <p><a href="#">Forums</a></p>
+    <br/>
     {% if boards %}
         <br/>
         <table width="100%">
@@ -18,8 +19,8 @@
                 </td>
                 <td style="border-bottom: 1px solid black" align="right">
                     {% if board.last_post %}
-                        {{ board.last_post.poster }}<br/>
-                        {{ board.last_post.db_date_created }}
+                        <b>{{ board.last_post.poster }}</b><br/>
+                        {{ board.last_post.db_date_created|timesince }} ago
                     {% else %}
                         &nbsp;<br/>&nbsp;
                     {% endif %}

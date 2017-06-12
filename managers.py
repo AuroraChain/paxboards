@@ -3,6 +3,7 @@ from __future__ import print_function
 from django.db import models
 from django.db.models import Q
 from itertools import chain
+from datetime import datetime
 from evennia.typeclasses.managers import (TypedObjectManager, TypeclassManager,
                                           returns_typeclass_list, returns_typeclass)
 
