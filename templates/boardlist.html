@@ -1,33 +1,42 @@
 {% extends "base.html" %}
+
+{% block header_ext %}
+    <link rel="stylesheet" type="text/css" href="/static/website/css/paxboards.css">
+{% endblock %}
+
 {% block content %}
 {% if user.is_authenticated %}
-    <p><a href="#">Forums</a></p>
-    <br/>
+    <div class="paxboards-breadcrumbs"><a href="#" class="paxboards-link">Forums</a></div>
     {% if boards %}
-        <br/>
-        <table width="100%">
-            <tr>
-                <th align="left" style="border-bottom: 1px solid black">Board</th>
-                <th align="right" style="border-bottom: 1px solid black">Last Post</th>
-            </tr>
-            {% for board in boards %}
-            <tr>
-                <td style="border-bottom: 1px solid black">
-                    {% if board.is_unread %}<b>{% endif %}
-                    <a href="/boards/{{ board.id }}/">{{ board.name }}</a>
-                    {% if board.is_unread %}</b>{% endif %}
-                </td>
-                <td style="border-bottom: 1px solid black" align="right">
-                    {% if board.last_post %}
-                        <b>{{ board.last_post.poster }}</b><br/>
-                        {{ board.last_post.db_date_created|timesince }} ago
-                    {% else %}
-                        &nbsp;<br/>&nbsp;
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+    {% for board in boards %}
+	<div class="paxboards-content">
+		<div class="paxboards-row"><div class="paxboards-row-internal">
+			<div class="paxboards-row-item-container">
+				<span class="paxboards-item-title">
+                    {% if board.is_unread %}<span class="paxboards-item-emphasis">{% endif %}
+                    <a href="{{ board.id }}/" class="paxboards-link">{{ board.name }}</a>
+                    {% if board.is_unread %}</span>{% endif %}
+                </span>
+			</div>
+			<div class="paxboards-row-detail-container">
+                {% if board.last_post %}
+				<span class="paxboards-detail-supertext">{{ board.last_post.db_date_created|timesince }} ago</span><br/>
+				<span class="paxboards-detail-title">
+                    <span class="paxboards-detail-emphasis">{{ board.last_post.poster }}</span>
+                    posted {{ board.last_post.db_subject }}
+                </span>
+                {% else %}
+                    <span class="paxboards-detail-supertext">&nbsp;</span><br/>
+                    <span class="paxboards-detail-title">&nbsp;</span>
+                {% endif %}
+			</div>
+			<div class="paxboards-row-subitem-container">
+				<span class="paxboards-subitem-title">{{ board.unread_count }}</span><br/>
+				<span class="paxboards-subitem-subtitle">unread</span>
+			</div></div>
+		</div>
+	</div>
+    {% endfor %}
     {% else %}
         <p>There are no available bboards.</p>
     {% endif %}

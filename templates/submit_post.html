@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 {% if user.is_authenticated %}
-    <h1><a href="/boards/{{ board_id }}/">{{ board.name }}</a></h1>
-    <br/>
+    <p><a href="..">Forums</a> &gt; {{ board.name }}</p>
     <form method="post">
         {% csrf_token %}
         <table width="100%">

@@ -1,39 +1,38 @@
 {% extends "base.html" %}
+{% block header_ext %}
+    <link rel="stylesheet" type="text/css" href="/static/website/css/paxboards.css">
+{% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
-    <p></p><a href="../..">Forums</a> &gt; <a href="..">{{ board.name }}</a> &gt; Thread</p>
-    <br/>
-    <h3>{{ post.db_subject }}</h3>
-    <table width="100%">
-        <tr>
-            <td width="30%">{{ post.db_poster_name }}</td>
-            <td align="right" width="100%"> {{ post.db_date_created|timesince }}</td>
-        </tr>
-    </table>
-    <hr/>
-    <div style="white-space: pre-wrap; font-family: monospace;;">{{ post.plaintext|urlize }}</div><p/>
-    {% if replies %}
-        <p/>
-        <table width="100%">
+    <div class="paxboards-breadcrumbs"><a href="../.." class="paxboards-link">Forums</a> &gt; <a href=".." class="paxboards-link">{{ board.name }}</a> &gt; {{ post.db_subject }}</div>
+    <div class="paxboards-pagetitle">{{ post.db_subject }}</div>
+
+    <div class="paxboards-content">
+        <div class="paxboards-row">
+            <div class="paxboards-row-internal">
+                <div class="paxboards-row-postinfo-container">
+                    <span class="paxboards-postinfo">Posted by <span class="paxboards-postinfo-emphasis">{{ post.db_poster_name }}</span>
+                        &middot; {{ post.db_date_created|timesince }} ago</span>
+                </div>
+                <div class="paxboards-row-post paxboards-row-divider">{{  post.plaintext|urlize }}</div>
+            </div>
+        </div>
         {% for reply in replies %}
-            <tr>
-                <td width="30%" style="border-top: 1px solid black">{{ reply.db_poster_name }}</td>
-                <td align="right" width="100%" style="border-top: 1px solid black"> {{ reply.db_date_created|timesince }}</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <div style="white-space: pre-wrap; font-family: monospace;;">{{ reply.plaintext|urlize }}</div>
-                    <p/>
-                </td>
-            </tr>
+        <div class="paxboards-row">
+            <div class="paxboards-row-internal">
+                <div class="paxboards-row-postinfo-container">
+                    <span class="paxboards-postinfo">Posted by <span class="paxboards-postinfo-emphasis">{{ reply.db_poster_name }}</span>
+                        &middot; {{ reply.db_date_created|timesince }} ago</span>
+                </div>
+                <div class="paxboards-row-post paxboards-row-divider">{{  reply.plaintext|urlize }}</div>
+            </div>
+        </div>
         {% endfor %}
-        </table>
-        <br clear="all"/>
-    {% endif %}
+    </div>
     {% if can_post %}
-        <form action="reply/" method="post">
+        <form action="reply/" method="post" class="paxboards-replyform">
             {% csrf_token %}
-            <table width="100%" style="border-top: 1px solid black">
+            <table width="100%">
                 {{ form.as_table }}
                 <tr><td></td><td><input type="submit" value="Reply"/></td></tr>
             </table>

@@ -137,6 +137,8 @@ class PostQuerySet(models.query.QuerySet):
             lr = p.last_reply
             setattr(p, "last_post_on", lr.db_date_created)
             setattr(p, "last_poster", lr.db_poster_name)
+            replies = self.filter(db_parent=p)
+            setattr(p, "total_posts", replies.count() + 1)
             if player:
                 if player.read_posts.filter(pk=lr.id).exists():
                     setattr(p, "unread", False)

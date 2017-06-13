@@ -1,31 +1,37 @@
 {% extends "base.html" %}
+{% block header_ext %}
+    <link rel="stylesheet" type="text/css" href="/static/website/css/paxboards.css">
+{% endblock %}
 {% block content %}
 {% if user.is_authenticated %}
-    <p><a href="..">Forums</a> &gt; {{ board.name }}</p>
-    <br/>
+    <div class="paxboards-breadcrumbs"><a href=".." class="paxboards-link">Forums</a> &gt; {{ board.name }}</div>
+            <div class="paxboards-post-button">
+                <a href="post/" class="paxboards-link">Post New Thread</a>
+            </div>
+        <div class="paxboards-content">
     {% if can_post %}
-        <div style="align: right">
-            <a href="post/">Post New Thread</a>
-        </div>
     {% endif %}
-    <table width="100%">
         {% for thread in threads %}
-            <tr>
-                <td style="border-top: 1px solid black; border-bottom: 1px solid black">
-                    <span style="font-size: larger">{% if thread.is_unread %}<b>{% endif %}
-                        <a href="/boards/{{ board.id }}/{{ thread.id }}/">{{ thread.subject }}</a>
-                        {% if thread.is_unread %}</b>{% endif %}</span>
-                    <br/>
-                    Originally posted by <b>{{ thread.posted_by }}</b> {{ thread.db_date_created|timesince }} ago
-                </td>
-                <td align="right" valign="bottom" style="border-top: 1px solid black; border-bottom: 1px solid black">
-                    Last post by <b>{{ thread.last_poster }}</b>
-                    <br/>
-                    {{ thread.last_post_on|timesince }} ago
-                </td>
-            </tr>
+                <div class="paxboards-row"><div class="paxboards-row-internal">
+                    <div class="paxboards-row-item-container">
+                        <span class="paxboards-item-title">
+                            {% if thread.is_unread %}<span class="paxboards-item-emphasis">{% endif %}
+                            <a href="{{ thread.id }}/" class="paxboards-link">{{ thread.subject }}</a>
+                            {% if thread.is_unread %}</span>{% endif %}
+                        </span><br/>
+                        <span class="paxboards-item-subtitle">Originally posted by <span class="paxboards-item-emphasis">{{ thread.posted_by }}</span> {{ thread.db_date_created|timesince }} ago</span>
+                    </div>
+                    <div class="paxboards-row-detail-container">
+                        <span class="paxboards-detail-title">Last post by <span class="paxboards-detail-emphasis">{{ thread.last_poster }}</span></span><br/>
+                        <span class="paxboards-detail-supertext">{{ thread.last_post_on|timesince }} ago</span>
+                    </div>
+                    <div class="paxboards-row-subitem-container">
+                        <span class="paxboards-subitem-title">{{ thread.total_posts }}</span><br/>
+                        <span class="paxboards-subitem-subtitle">posts</span>
+                    </div>
+                </div></div>
         {% endfor %}
-    </table>
+            </div>
 {% else %}
     <p>Please <a href="{% url 'login'%}">login</a>first.<a/></p>
 {% endif %}

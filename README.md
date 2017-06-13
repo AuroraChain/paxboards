@@ -25,7 +25,11 @@ custom_patterns = [
 
 If you already have custom patterns, just add the url record to your existing list.
 
-When all of this is done, run `evennia makemigrations` and `evennia migrate`, then execute `@reload` on your game, and you should be good to go.
+Lastly, you will need to copy `paxboards.css` from the `templates` directory of the paxboards installation to your `web/static/website/css` directory.
+
+When all of this is done, run `evennia makemigrations paxboards` and `evennia migrate`, then execute `@reload` on your game, and you should be good to go.  
+
+You can use the `bbadmin` command on your game to create a test board.
 
 ### Updating Templates
 
@@ -33,7 +37,7 @@ If you want to link the boards from anywhere on your website, simply use `{% url
 
 ### Adding to Django Admin Console
 
-If you want to administer bboards from the Django web admin console, you'll also need to modify the `evennia_admin.html` in order to add the following to the list of administrative sections:
+If you want to administer bboards from the Django web admin console, you'll also need to modify your `evennia_admin.html` in order to add the following to the list of administrative sections:
 
 ```
     <h2><a href="{% url "admin:paxboards_boarddb_changelist" %}">Boards</a></h2>
@@ -58,13 +62,12 @@ It supports full lock handlers, with the following access keys:
 
 ### Post
 
-Post is a simple object class which encapsulates a given post.  Boards can be asked for their posts, and when you provide a calling player, it will annotate each DefaultPost with an 'unread' property as to whether or not that property has been read.
+Post is a simple object class which encapsulates a given post.  Boards can be asked for their posts, and when you provide a calling player, it will annotate each Post with an 'unread' property as to whether or not that property has been read.
 
 It supports some simple tools to check whether or not a player has access to perform a given operation.
 
 ## TODO
 
 * The DefaultBoard/Post APIs could be cleaned up considerably; we shouldn't be dipping into the models' `db_*` fields for basic access outside of the classes themselves.
-* The web interface also seriously needs better templates.  It's kind of ugly right now.
 * The helpfile for bboard could be a lot better.
-* As this was my first major Evennia code and I was just off in my own corner with it, there's probably places I could've done things more 'properly'.
+* As this was my first major Evennia code and I was just off in my own corner with it, there's probably places I could've done things more 'properly'.  For instance, DefaultBoard doesn't really need to be set up as a defaulted subclassable typeclass.

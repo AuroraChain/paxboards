@@ -1,0 +1,161 @@
+.paxboards-content {
+	width: 95%;
+	margin-left: 2.5%;
+	display: table;
+	vertical-align: middle;
+	clear: both;
+}
+
+.paxboards-row {
+	width: 100%;
+	height: 60px;
+	vertical-align: middle;
+	display: table-row;
+	clear: both;
+	float: none;
+}
+
+.paxboards-row-divider {
+	border-bottom: 1px solid lightgray;
+}
+
+.paxboards-row-internal {
+	vertical-align: middle;
+	display: table-cell;
+}
+	
+.paxboards-row-item-container {
+	float: left;
+	margin-left: 10px;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.paxboards-row-subitem-container {
+	float: right;
+	display: inline-block;
+	vertical-align: middle;
+	margin-right: 18px;
+	text-align: center;
+}
+
+.paxboards-row-detail-container {
+	border-left: 2px solid darkgray;
+	border-radius: 4px;
+	padding-left: 10px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin-right: 10px;
+	width: 30%;
+	float: right;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.paxboards-subitem-title {
+	font-size: 16pt;
+	font-weight: bolder;
+}
+
+.paxboards-subitem-subtitle {
+	font-size: 10pt;
+}
+
+.paxboards-item-title {
+	font-size: 14pt;
+}
+
+a.paxboards-link:link {
+	text-decoration: none;
+}
+
+a.paxboards-link:visited {
+	text-decoration: none;
+}
+a.paxboards-link:hover {
+	text-decoration: none;
+}
+a.paxboards-link:active {
+	text-decoration: none;
+}
+
+
+.paxboards-item-subtitle {
+	font-size: 10pt;
+}
+
+.paxboards-item-emphasis {
+	font-weight: bolder;
+}
+
+.paxboards-detail-supertext {
+	font-size: 8pt;
+	font-weight: lighter;
+}
+
+.paxboards-detail-title {
+	font-size: 10pt;
+}
+
+.paxboards-detail-emphasis {
+	font-weight: bolder;
+}
+
+.paxboards-post-button {
+	float: right;
+	padding-left: 4px;
+	padding-right: 4px;
+	margin-right: 2.5%;
+	margin-top: 10px;
+	border-left: 2px solid lightblue;
+	border-right: 2px solid lightblue;
+	border-radius: 3px;
+	font-size: 10pt;
+	font-weight: bolder;
+	clear: both;
+}
+
+.paxboards-breadcrumbs {
+	width: 95%;
+	margin-left: 2.5%;
+	margin-right: 2.5%;
+	background-color: lightgray;
+	font-size: 12pt;
+	padding: 4px;
+	margin-bottom: 8px;
+}
+
+.paxboards-pagetitle {
+	width: 95%;
+	margin-left: 2.5%;
+	margin-right: 2.5%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-size: 18pt;
+	font-weight: bolder;
+}
+
+.paxboards-row-postinfo-container {
+	margin-top: 8px;
+}
+
+.paxboards-postinfo {
+	font-size: 10pt;
+}
+
+.paxboards-postinfo-emphasis {
+	font-weight: bolder;
+}
+
+.paxboards-row-post {
+	margin-top: 18px;
+	padding-bottom: 18px;
+	white-space: pre-wrap;
+	font-family: monospace;
+	font-size: 12pt;
+}
+
+.paxboards-replyform {
+	margin-left: 2.5%;
+	margin-top: 18px;
+}
