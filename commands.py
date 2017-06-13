@@ -365,12 +365,14 @@ class BoardCmd(default_cmds.MuxCommand):
         if "new" in self.switches or self.cmdstring == "@bbnew":
             if not self.lhs:
                 for b in boards:
-                    posts = b.posts(caller)
-                    for p in posts:
-                        if p.is_unread:
-                            p.display_post(caller)
-                            p.mark_read(caller, True)
-                            return
+
+                    if b.subscribers().filter(pk=caller.pk).exists():
+                        posts = b.posts(caller)
+                        for p in posts:
+                            if p.is_unread:
+                                p.display_post(caller)
+                                p.mark_read(caller, True)
+                                return
 
                 self.msg("No unread posts!")
                 return
