@@ -68,6 +68,11 @@ It supports some simple tools to check whether or not a player has access to per
 
 ## TODO
 
-* The DefaultBoard/Post APIs could be cleaned up considerably; we shouldn't be dipping into the models' `db_*` fields for basic access outside of the classes themselves.
-* The helpfile for bboard could be a lot better.
-* As this was my first major Evennia code and I was just off in my own corner with it, there's probably places I could've done things more 'properly'.  For instance, DefaultBoard doesn't really need to be set up as a defaulted subclassable typeclass.
+* As this was my first major Evennia code and I was just off in my own corner with it, there's probably places I could've done things more 'properly' by an Evennia standard (instead of a Django standard with Evennia-ish bits thrown in):
+	* For instance, DefaultBoard doesn't really need to be set up as a typeclass, or if it is, it should use normal dbrefs.
+	* If they used normal dbrefs, then tags/attributes could be used instead of the `db_*` fields that are presently used to configure boards.
+	* The entire thing probably didn't need to be made a Django installable application; it may not fit well into normal Evennia contrib as a result.
+	* The DefaultBoard/Post APIs could be cleaned up considerably; we probably shouldn't be dipping into the models' `db_*` fields for basic access outside of the classes themselves.  I started a bit of this.
+* The CSS/HTML styling for the actual threads could definitely be better.
+* The web-side needs proper web-forum-style paging, so you can get smaller 'chunks' of a board at once.
+* The helpfile for bboard could be a lot better in general.
