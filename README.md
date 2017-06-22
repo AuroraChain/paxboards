@@ -73,6 +73,10 @@ It supports some simple tools to check whether or not a player has access to per
 	* If they used normal dbrefs, then tags/attributes could be used instead of the `db_*` fields that are presently used to configure boards.
 	* The entire thing probably didn't need to be made a Django installable application; it may not fit well into normal Evennia contrib as a result.
 	* The DefaultBoard/Post APIs could be cleaned up considerably; we probably shouldn't be dipping into the models' `db_*` fields for basic access outside of the classes themselves.  I started a bit of this.
-* The CSS/HTML styling for the actual threads could definitely be better.
-* The web-side needs proper web-forum-style paging, so you can get smaller 'chunks' of a board at once.
+* We could stand to move away from doing makemigrations, and store the migrations in git instead. 
+* The web-side could be cleaned up
+	* The CSS/HTML styling for the actual threads could definitely be better.
+	* The web-side needs proper web-forum-style paging, so you can get smaller 'chunks' of a board at once.
+* Optionally, boards should legitimately truncate their data rather than just obscuring it but keeping the historical data.  This would be relevant for boards like Classifieds on Arx.
+* Optionally, it should be possible to set a particularly spammy board (again, akin to Classifieds on Arx) as not shared on the web.
 * The helpfile for bboard could be a lot better in general.
