@@ -4,11 +4,10 @@ from django.db import models
 from django.db.models import Q
 from itertools import chain
 from datetime import datetime
-from evennia.typeclasses.managers import (TypedObjectManager, TypeclassManager,
-                                          returns_typeclass_list, returns_typeclass)
+from evennia.typeclasses.managers import (TypedObjectManager, TypeclassManager)
 
 _GA = object.__getattribute__
-_PlayerDB = None
+_AccountDB = None
 _ObjectDB = None
 _BoardDB = None
 _SESSIONS = None
@@ -105,7 +104,7 @@ class PostQuerySet(models.query.QuerySet):
 
         Args:
             board (BoardDB): The board whose posts should be checked.
-            player (PlayerDB): The player whose read/unread status should be used.
+            player (AccountDB): The player whose read/unread status should be used.
 
         Returns:
             A list of Post objects.
@@ -153,11 +152,9 @@ class PostManager(TypedObjectManager):
     def get_queryset(self):
         return PostQuerySet(self.model, using=self._db)
 
-    @returns_typeclass
     def post(self, id):
         return self.get_queryset().get(pk=id)
 
-    @returns_typeclass_list
     def posts(self, board, player=None):
         """
         Given a board and an optional player, returns the posts
@@ -174,7 +171,6 @@ class PostManager(TypedObjectManager):
         else:
             return self.get_queryset().by_board_for_player(board, player)
 
-    @returns_typeclass_list
     def threads(self, board, player=None):
         """
         Given a board and an optional player, return the threads.
@@ -188,7 +184,6 @@ class PostManager(TypedObjectManager):
         """
         return self.get_queryset().by_board_threaded_player(board, player)
 
-    @returns_typeclass_list
     def search(self, searchstring, board=None):
         if board:
             result = self.get_queryset().by_board(board).filter(db_text__icontains=searchstring).\
@@ -209,7 +204,6 @@ class BoardDBManager(TypedObjectManager):
 
     """
 
-    @returns_typeclass_list
     def get_all_boards(self):
         """
         Returns all boards.
@@ -219,11 +213,9 @@ class BoardDBManager(TypedObjectManager):
         """
         return self.all()
 
-    @returns_typeclass
     def get_board_id(self, id):
         return self.get(pk=id)
 
-    @returns_typeclass
     def get_board(self, key):
         """
         Returns a specific board beginning with the key.
@@ -248,7 +240,6 @@ class BoardDBManager(TypedObjectManager):
         except self.model.DoesNotExist:
             return None
 
-    @returns_typeclass
     def get_board_exact(self, key):
         """
         Returns a specific board matching the key.
@@ -268,8 +259,6 @@ class BoardDBManager(TypedObjectManager):
         except self.model.DoesNotExist:
             return None
 
-
-    @returns_typeclass_list
     def get_all_visible_boards(self, caller):
         """
         This function returns all the boards visible to a given viewer.
@@ -291,16 +280,15 @@ class BoardDBManager(TypedObjectManager):
                 if p.is_unread:
                     unread = unread + 1
 
-            setattr(b,"unread_count", unread)
-            setattr(b,"total_count", len(all_posts))
+            setattr(b, "unread_count", unread)
+            setattr(b, "total_count", len(all_posts))
 
             if all_posts:
-                last_post = all_posts[-1]
-                setattr(b,"last_post", last_post)
+                last_post = list(all_posts)[-1]
+                setattr(b, "last_post", last_post)
 
         return filtered
 
-    @returns_typeclass
     def get_visible_board(self, viewer, key):
         """
         This function returns a single board matching the key, provided it's unique.
@@ -339,7 +327,6 @@ class BoardDBManager(TypedObjectManager):
 
         return None
 
-    @returns_typeclass_list
     def get_subscriptions(self, subscriber):
         """
         This function returns a list of boards a given user is subscribed to.
@@ -352,7 +339,7 @@ class BoardDBManager(TypedObjectManager):
 
         """
         clsname = subscriber.__dbclass__.__name__
-        if clsname == "PlayerDB":
+        if clsname == "AccountDB":
             return subscriber.board_subscriptions_set.all()
 
         return []

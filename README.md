@@ -12,10 +12,17 @@ Simply grab this repository as a subdirectory of your Evennia game directory, an
 
 ```
 INSTALLED_APPS += ('paxboards',)
-TYPECLASS_PATHS += ['paxboards']
 ```
 
-Then go to `web/urls.py` and add:
+You will then next need to go to `commands/default_cmdsets.py` and add:
+
+```
+from paxboards.commands import add_board_commands
+```
+
+And then edit CharacterCmdSet's `at_cmdset_creation` function to add `add_board_commands(self)` to the bottom. 
+
+Next, go to `web/urls.py` and add:
 
 ```
 custom_patterns = [
@@ -34,15 +41,6 @@ You can use the `bbadmin` command on your game to create a test board.
 ### Updating Templates
 
 If you want to link the boards from anywhere on your website, simply use `{% url 'paxboards:boardlist' %}` in any template file to automatically generate the appropriate URL for your site installation.
-
-### Adding to Django Admin Console
-
-If you want to administer bboards from the Django web admin console, you'll also need to modify your `evennia_admin.html` in order to add the following to the list of administrative sections:
-
-```
-    <h2><a href="{% url "admin:paxboards_boarddb_changelist" %}">Boards</a></h2>
-    Boards are used for static player communications.
-```
 
 ## Components
 

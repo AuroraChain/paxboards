@@ -233,7 +233,7 @@ class BoardCmd(default_cmds.MuxCommand):
                 self.msg("The post identifier '" + readargs[1] + "' must be a positive integer!")
                 return None
 
-        board = DefaultBoard.objects.get_visible_board(self.player, boardname)
+        board = DefaultBoard.objects.get_visible_board(self.account, boardname)
         if not board:
             self.msg("Unable to find a board matching '" + string + "'!")
             return None
@@ -241,7 +241,7 @@ class BoardCmd(default_cmds.MuxCommand):
         if len(readargs) == 1:
             return {"board": board, "post": None, "postnum": 0}
 
-        posts = board.posts(self.player)
+        posts = board.posts(self.account)
 
         if not (0 < postnum <= len(posts)):
             self.msg("There's no post by that number.")
@@ -254,7 +254,7 @@ class BoardCmd(default_cmds.MuxCommand):
     # This is overly long, and could potentially use a refactor to split the switches out
     # into their own functions.
     def func(self):
-        caller = self.player
+        caller = self.account
 
         boards = DefaultBoard.objects.get_all_visible_boards(caller)
         shortcut = False
@@ -447,9 +447,9 @@ class BoardCmd(default_cmds.MuxCommand):
                 self.msg("You don't have permission to post to " + board.name + "!")
                 return
 
-            postplayer = self.player
+            postplayer = self.account
             postobject = None
-            postname = self.player.name
+            postname = self.account.name
 
             if self.caller is Object or self.caller is Character:
                 postobject = self.caller
@@ -499,9 +499,9 @@ class BoardCmd(default_cmds.MuxCommand):
             while post.db_parent:
                 post = post.db_parent
 
-            postplayer = self.player
+            postplayer = self.account
             postobject = None
-            postname = self.player.name
+            postname = self.account.name
 
             if self.caller is Object or self.caller is Character:
                 postobject = self.caller
@@ -641,3 +641,8 @@ class BoardCmdSet(CmdSet):
     def at_cmdset_creation(self):
         self.add(BoardAdminCmd())
         self.add(BoardCmd())
+
+
+def add_board_commands(commandset):
+    commandset.add(BoardAdminCmd())
+    commandset.add(BoardCmd())

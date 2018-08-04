@@ -42,4 +42,5 @@ class BoardAdmin(admin.ModelAdmin):
         obj.at_init()
     pass
 
+
 admin.site.register(BoardDB, BoardAdmin)

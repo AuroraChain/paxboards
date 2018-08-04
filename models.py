@@ -26,18 +26,21 @@ class Post(SharedMemoryModel):
     - db_text: The actual text of the post.
 
     """
-    db_poster_player = models.ForeignKey("players.PlayerDB", related_name="+", null=True, blank=True,
-                                         verbose_name="poster(player)", db_index=True, help_text='Post origin (if player).')
+    db_poster_player = models.ForeignKey("accounts.AccountDB", related_name="+", null=True, blank=True,
+                                         verbose_name="poster(player)", db_index=True,
+                                         help_text='Post origin (if player).')
     db_poster_object = models.ForeignKey("objects.ObjectDB", related_name="+", null=True, blank=True,
-                                         verbose_name="poster(object)", db_index=True, help_text='Post origin (if object),')
+                                         verbose_name="poster(object)", db_index=True,
+                                         help_text='Post origin (if object),')
     db_poster_name = models.CharField(max_length=40, verbose_name="poster", null=False, blank=False,
                                       help_text='Poster display name.')
     db_subject = models.CharField(max_length=40, verbose_name="subject", help_text='Subject of post.')
     db_board = models.ForeignKey("BoardDB", verbose_name='board', help_text='Board this post is on.', db_index=True)
     db_date_created = models.DateTimeField('date created', editable=False,
-                                            auto_now_add=True, db_index=True, help_text='Date post was made.')
-    db_pinned = models.BooleanField(verbose_name="pinned", help_text='Should the post remain visible even after expiration?')
-    db_readers = models.ManyToManyField("players.PlayerDB", related_name="read_posts", null=True, blank=True,
+                                           auto_now_add=True, db_index=True, help_text='Date post was made.')
+    db_pinned = models.BooleanField(verbose_name="pinned",
+                                    help_text='Should the post remain visible even after expiration?')
+    db_readers = models.ManyToManyField("accounts.AccountDB", related_name="read_posts", null=True, blank=True,
                                         verbose_name="readers", help_text='Players who have read this post.')
     db_parent = models.ForeignKey('Post', verbose_name='parent', related_name='replies', null=True, blank=True,
                                   help_text='Parent/child map for threaded replies.')
@@ -76,7 +79,7 @@ class Post(SharedMemoryModel):
             return False
 
         clsname = player.__dbclass__.__name__
-        if clsname == "PlayerDB":
+        if clsname == "AccountDB":
             if self.db_poster_player == player:
                 return True
         elif clsname == "ObjectDB":
@@ -116,7 +119,7 @@ class Post(SharedMemoryModel):
 
         """
         posts = Post.objects.posts(self.db_board)
-        return posts.index(self) + 1 if self in posts else None
+        return list(posts).index(self) + 1 if self in posts else None
 
     @property
     def last_reply(self):
@@ -221,7 +224,7 @@ class BoardDB(TypedObject):
                                              help_text='Maximum number of active/visible posts for this board.')
     db_expiry_duration = models.IntegerField('lifetime_days', blank=True, null=True,
                                              help_text='Maximum timeline in days for posts to live on this board.')
-    db_subscriptions = models.ManyToManyField('players.PlayerDB', blank=True, verbose_name='subscribers',
+    db_subscriptions = models.ManyToManyField('accounts.AccountDB', blank=True, verbose_name='subscribers',
                                               related_name='board_subscriptions',
                                               help_text='Players subscribed to this board.')
 

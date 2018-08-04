@@ -53,7 +53,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
         Obtain all the Players subscribed to this board.
 
         Returns:
-            A list of PlayerDB objects.
+            A list of AccountDB objects.
 
         """
         return self.db_subscriptions.all()
@@ -63,7 +63,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
         Sets whether or not a given player is subscribed to the board.
 
         Args:
-            player (PlayerDB): A player to subscribe or unsubscribe.
+            player (AccountDB): A player to subscribe or unsubscribe.
             subscribed (boolean): Whether or not to be subscribed.
 
         Returns:
@@ -112,7 +112,7 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
             subject (string): The subject line for the post. Required.
             text (string): The actual text of the post.  Required.
             author_name (string): A display name for the author. Defaults to server name.
-            author_player (PlayerDB): The player making a post, if applicable, or None.
+            author_player (AccountDB): The player making a post, if applicable, or None.
             author_object (ObjectDB): An object making a post, if applicable, or None.
             parent (Post): A parent post, if this is in reply to another post, or None.
 
