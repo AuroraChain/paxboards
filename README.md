@@ -8,7 +8,7 @@ Paxboards was originally written by Packetdancer, a.k.a. "Pax", for use on Auror
 
 ### Basic Requirements
 
-Simply grab this repository as a subdirectory of your Evennia game directory, and then add the following two lines to your `server/conf/settings.py` file:
+Simply grab this repository as a subdirectory of your Evennia game directory, and then add the following line to your `server/conf/settings.py` file:
 
 ```
 INSTALLED_APPS += ('paxboards',)
@@ -46,7 +46,7 @@ If you want to link the boards from anywhere on your website, simply use `{% url
 
 ### DefaultBoard
 
-DefaultBoard is a new Evennia base typeclass, which encapsulates all the board functionality.  It shows up at a database level and is manageable as with any other Evennia typeclass.
+DefaultBoard is a new Evennia base class, which encapsulates all the board functionality.
 
 It also exposes a custom Django manager/queryset handler, allowing you to easily query which bboards are visible to a specific player from the class itself.
 
