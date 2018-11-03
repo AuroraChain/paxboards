@@ -4,7 +4,7 @@ This defines how Board models are displayed in the web admin interface.
 """
 
 from django.contrib import admin
-from models import BoardDB
+from boards import DefaultBoard
 
 
 class BoardAdmin(admin.ModelAdmin):
@@ -43,4 +43,4 @@ class BoardAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(BoardDB, BoardAdmin)
+admin.site.register(DefaultBoard, BoardAdmin)

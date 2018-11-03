@@ -10,6 +10,13 @@ class DefaultBoard(with_metaclass(TypeclassBase, BoardDB)):
 
     objects = BoardManager()
 
+    __applabel__ = "paxboards"
+
+    class Meta(object):
+        "Define Django meta options"
+        verbose_name = "Board"
+        verbose_name_plural = "Boards"
+
     def __str__(self):
         return "<Board: " + self.name + ">"
 
