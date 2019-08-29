@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from evennia.typeclasses.models import TypedObject
 from evennia.utils.idmapper.models import SharedMemoryModel
-from managers import PostManager
+from .managers import PostManager
 
 __all__ = ("Post", "BoardDB")
 
@@ -28,14 +28,14 @@ class Post(SharedMemoryModel):
     """
     db_poster_player = models.ForeignKey("accounts.AccountDB", related_name="+", null=True, blank=True,
                                          verbose_name="poster(player)", db_index=True,
-                                         help_text='Post origin (if player).')
+                                         help_text='Post origin (if player).', on_delete=models.CASCADE)
     db_poster_object = models.ForeignKey("objects.ObjectDB", related_name="+", null=True, blank=True,
                                          verbose_name="poster(object)", db_index=True,
-                                         help_text='Post origin (if object),')
+                                         help_text='Post origin (if object),', on_delete=models.CASCADE)
     db_poster_name = models.CharField(max_length=40, verbose_name="poster", null=False, blank=False,
                                       help_text='Poster display name.')
     db_subject = models.CharField(max_length=40, verbose_name="subject", help_text='Subject of post.')
-    db_board = models.ForeignKey("BoardDB", verbose_name='board', help_text='Board this post is on.', db_index=True)
+    db_board = models.ForeignKey("BoardDB", verbose_name='board', help_text='Board this post is on.', db_index=True, on_delete=models.CASCADE)
     db_date_created = models.DateTimeField('date created', editable=False,
                                            auto_now_add=True, db_index=True, help_text='Date post was made.')
     db_pinned = models.BooleanField(verbose_name="pinned",
@@ -43,7 +43,7 @@ class Post(SharedMemoryModel):
     db_readers = models.ManyToManyField("accounts.AccountDB", related_name="read_posts", null=True, blank=True,
                                         verbose_name="readers", help_text='Players who have read this post.')
     db_parent = models.ForeignKey('Post', verbose_name='parent', related_name='replies', null=True, blank=True,
-                                  help_text='Parent/child map for threaded replies.')
+                                  help_text='Parent/child map for threaded replies.', on_delete=models.CASCADE)
     db_text = models.TextField(verbose_name="post_text", null=True, blank=True, help_text='Text of the post.')
 
     objects = PostManager()
