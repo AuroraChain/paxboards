@@ -34,7 +34,7 @@ If you already have custom patterns, just add the url record to your existing li
 
 Lastly, you will need to copy `paxboards.css` from the `templates` directory of the paxboards installation to your `web/static/website/css` directory.
 
-When all of this is done, run `evennia makemigrations paxboards` and `evennia migrate`, then execute `@reload` on your game, and you should be good to go.  
+When all of this is done, pip install future, run `evennia makemigrations paxboards` and `evennia migrate`, then execute `@reload` on your game, and you should be good to go.  
 
 You can use the `bbadmin` command on your game to create a test board.
 

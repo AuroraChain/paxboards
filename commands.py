@@ -5,9 +5,9 @@ from evennia.utils import evtable
 from typeclasses.characters import Character
 from typeclasses.objects import Object
 
-from board_utils import *
-from boards import DefaultBoard
-from models import Post
+from paxboards.board_utils import *
+from paxboards.boards import DefaultBoard
+from paxboards.models import Post
 
 def is_positive_int(string):
     """
@@ -94,7 +94,7 @@ class BoardAdminCmd(default_cmds.MuxCommand):
 
             try:
                 board.locks.add(self.rhs)
-            except LockException, err:
+            except (LockException, err):
                 self.msg(err)
                 return
 

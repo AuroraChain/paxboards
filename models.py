@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from evennia.typeclasses.models import TypedObject
 from evennia.utils.idmapper.models import SharedMemoryModel
-from managers import PostManager
+from paxboards.managers import PostManager
 
 __all__ = ("Post", "BoardDB")
 
@@ -26,23 +26,23 @@ class Post(SharedMemoryModel):
     - db_text: The actual text of the post.
 
     """
-    db_poster_player = models.ForeignKey("accounts.AccountDB", related_name="+", null=True, blank=True,
+    db_poster_player = models.ForeignKey("accounts.AccountDB", related_name="+", null=True, blank=True, on_delete=models.SET_NULL,
                                          verbose_name="poster(player)", db_index=True,
                                          help_text='Post origin (if player).')
-    db_poster_object = models.ForeignKey("objects.ObjectDB", related_name="+", null=True, blank=True,
+    db_poster_object = models.ForeignKey("objects.ObjectDB", related_name="+", null=True, blank=True, on_delete=models.SET_NULL,
                                          verbose_name="poster(object)", db_index=True,
                                          help_text='Post origin (if object),')
-    db_poster_name = models.CharField(max_length=40, verbose_name="poster", null=False, blank=False,
+    db_poster_name = models.CharField(max_length=40, verbose_name="poster", null=False, blank=False, 
                                       help_text='Poster display name.')
     db_subject = models.CharField(max_length=40, verbose_name="subject", help_text='Subject of post.')
-    db_board = models.ForeignKey("BoardDB", verbose_name='board', help_text='Board this post is on.', db_index=True)
+    db_board = models.ForeignKey("BoardDB", verbose_name='board', on_delete=models.CASCADE, help_text='Board this post is on.', db_index=True)
     db_date_created = models.DateTimeField('date created', editable=False,
                                            auto_now_add=True, db_index=True, help_text='Date post was made.')
     db_pinned = models.BooleanField(verbose_name="pinned",
                                     help_text='Should the post remain visible even after expiration?')
     db_readers = models.ManyToManyField("accounts.AccountDB", related_name="read_posts", null=True, blank=True,
                                         verbose_name="readers", help_text='Players who have read this post.')
-    db_parent = models.ForeignKey('Post', verbose_name='parent', related_name='replies', null=True, blank=True,
+    db_parent = models.ForeignKey('Post', verbose_name='parent', related_name='replies', null=True, blank=True, on_delete=models.SET_NULL,
                                   help_text='Parent/child map for threaded replies.')
     db_text = models.TextField(verbose_name="post_text", null=True, blank=True, help_text='Text of the post.')
 
@@ -174,9 +174,9 @@ class Post(SharedMemoryModel):
         else:
             postid = self.db_board.name
 
-        datestring = unicode(str(self.db_date_created.year)) + u'/'
-        datestring += unicode(str(self.db_date_created.month)).rjust(2, '0') + u'/'
-        datestring += unicode(str(self.db_date_created.day)).rjust(2, '0')
+        datestring = (str(self.db_date_created.year)) + u'/'
+        datestring += (str(self.db_date_created.month)).rjust(2, '0') + u'/'
+        datestring += (str(self.db_date_created.day)).rjust(2, '0')
 
         header = ("===[ " + postid + " ]").ljust(75, "=")
 
@@ -192,9 +192,9 @@ class Post(SharedMemoryModel):
         if show_replies:
             replies = Post.objects.filter(db_parent=self).order_by('db_date_created')
             for r in replies:
-                datestring = unicode(str(r.db_date_created.year)) + u'/'
-                datestring += unicode(str(r.db_date_created.month)).rjust(2, '0') + u'/'
-                datestring += unicode(str(r.db_date_created.day)).rjust(2, '0')
+                datestring = (str(r.db_date_created.year)) + u'/'
+                datestring += (str(r.db_date_created.month)).rjust(2, '0') + u'/'
+                datestring += (str(r.db_date_created.day)).rjust(2, '0')
                 post_string += "\n---------------------------------------------------------------------------\n"
                 post_string += "|555Date   :|n " + datestring + "\n"
                 post_string += "|555Poster :|n " + r.db_poster_name + "\n"

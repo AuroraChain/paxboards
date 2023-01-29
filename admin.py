@@ -4,7 +4,7 @@ This defines how Board models are displayed in the web admin interface.
 """
 
 from django.contrib import admin
-from boards import DefaultBoard
+from paxboards.boards import DefaultBoard
 
 
 class BoardAdmin(admin.ModelAdmin):

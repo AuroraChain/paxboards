@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponseRedirect
-from boards import DefaultBoard
-from models import Post
+from paxboards.boards import DefaultBoard
+from paxboards.models import Post
 from evennia.utils import ansi
-from forms import PostForm, ReplyForm
+from paxboards.forms import PostForm, ReplyForm
 
 # Create your views here.
 
